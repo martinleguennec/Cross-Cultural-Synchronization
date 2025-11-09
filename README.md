@@ -1,4 +1,4 @@
-# Audio-Motor Synchronization Analysis Repository
+# Universal and Cross-Cultural Variations in Audio-Motor Synchronization Between French and Indian Participants
 
 ## Overview
 
