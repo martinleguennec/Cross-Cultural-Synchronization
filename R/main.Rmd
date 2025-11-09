@@ -1,0 +1,2223 @@
+---
+title: "Qualitative and Statistical Analysis"
+author: "Martin Le Guennec"
+date: "`r Sys.Date()`"
+output:
+  bookdown::pdf_document2: 
+    toc: true
+    toc_depth: 3
+  html_document: default
+  pdf_document: default
+  officedown::rdocx_document: default
+  word_document: default
+bibliography: Rmd_utils/references.bib
+csl: Rmd_utils/apa.csl
+always_allow_html: true
+header-includes:
+- \usepackage{caption}
+- \usepackage{amsmath}
+- \usepackage{titlesec}
+- \usepackage{xcolor}
+- "\\definecolor{section-color}{RGB}{0, 90, 160}"
+- "\\definecolor{subsection-color}{RGB}{70, 70, 70}"
+- "\\definecolor{caption-color}{RGB}{100, 100, 100}"
+- "\\titleformat{\\section}{\\fontsize{20pt}{24pt}\\bfseries\\sffamily\\color{section-color}}{\\thesection}{1em}{}"
+- \titleformat{\subsection}{\fontsize{16pt}{20pt}\selectfont\bfseries\sffamily}{\thesubsection}{1em}{}
+- \titleformat{\subsubsection}{\fontsize{13pt}{14pt}\selectfont\bfseries\sffamily}{}{0em}{}
+- \titleformat{\paragraph}[runin]{\normalfont\normalsize\bfseries\sffamily}{}{0em}{\MakeUppercase}
+- "\\DeclareCaptionFont{captiongray}{\\color{caption-color}}"
+- \captionsetup[figure]{labelfont={bf,it}, textfont=it, labelsep=period, justification=centering,
+  font=captiongray}
+- \captionsetup[table]{labelfont={bf,it}, textfont=it, labelsep=period, justification=centering,
+  font=captiongray}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  fig.align = "center",
+  fig.asp = 0.8,
+  fig.width = 15,
+  warning = FALSE
+  # dev = "cairo_pdf"
+)
+
+options(knitr.kable.NA = "")
+```
+
+```{r load_libraries, message=FALSE, warning=FALSE}
+# Data manipulation and visualization
+library(cowplot)
+library(ggpubr)
+library(tidyverse)
+library(ggpmisc)
+library(gghalves)
+library(ggridges)
+library(ggstance)
+library(ggh4x)
+library(kableExtra)
+library(car)
+
+# Statistical modelling and analysis
+library(rstatix)
+library(circular)
+library(effectsize)
+library(lme4)
+library(lmerTest)
+library(emmeans)
+library(performance)
+library(MuMIn)
+
+# PDF knitting
+library(knitr)
+
+# The custom functions are contained in this R file
+source("PRG/utils.R")
+```
+
+\newpage
+
+\listoffigures
+
+\newpage
+
+\listoftables
+
+\newpage
+
+# Theoretical Assumptions
+
+## Definitions {data-link="Definitions"}
+
+Synchronization is the process of maintaining temporal coordination between two oscillating systems—in our context, a participant's finger movement and an external metronome. This phenomenon can be understood through the framework of dynamical systems theory [@schöner1988; @kelso1995; @pikovsky2001; @large2023]. Here we aim to introduce the parameters and observables (dependent variables) used in the study within the framework and parlance of the forced oscillator model. We restrict this contextualization to this minimal model, without including the addition of a frequency adaptation dynamics, and the stochastic treatment which accounts for randomness [@schöner1986].
+
+In this context, the participant's finger movement can be modeled as a self-sustained oscillator influenced by an external periodic force (the metronome). A self-sustained oscillator is characterized by a stable amplitude oscillation and a *phase*, $\phi_\text{osci}$, which is neutral stable (neither stable nor unstable). Phase indicates the position of the current state of the oscillator relative to a complete oscillation; in sum, it gives the current % of a $2\pi$ cycle, thereby expressing time relative to a full cycle. Since the amplitude is stable, it is approximated as constant and often neglected [@haken1985], thereby simplifying the model because $\phi_\text{osci}$​ fully describes the oscillator state[^1] and its reaction to external forcing, like a perceived metronome in audio-motor synchronization. Models of this class are referred to as phase reduction models, dubbed phase oscillators; the underlying theory is powerful and widely applied across disciplines [see @pikovsky2001].
+
+[^1]: For an example of synchronization model with phase oscillator applied to fireflies, see @ermentrout1991 or chapter 4.5 ***"Fireflies"*** of @strogatz2024. For an application to bistable dynamics and transition in human bimanual coordination, see @haken1985 .
+
+By considering the $\phi_\text{osci}$ values when an external stimulus occurs, one constructs the *relative phase* $\phi$ between the participant's movement and the metronome events [@kelso1984; @kelso1990; @schäfer1999]. This variable describes the time relationship between the movement and the stimuli as an angle: when $\phi=0$, the tap is perfectly aligned with the stimulus; when $\phi=\pm\pi$, the tap occurs in-between two consecutive stimuli. The angular nature of the variable is important to account for the periodicity of the participant's behavior and of the forcing. We consider that synchronization occurs when the relative phase $\phi$ is constant over time [@schäfer1999], with small fluctuations around this value due to the presence of noise, meaning that the deviation of its derivative $\dot\phi$ (where $\dot \phi$ denotes the time derivative $d\phi/dt$) from 0 is negligible. The specific value of $\phi$ does not matter in this definition since synchronization can occur at different phase relationships—what matters is that the phase difference remains stable over time. The introduction of $\phi$ as an order parameter for human synchronization was developed by @haken1985 and @schöner1986. The advantage of mapping the dynamics of oscillators onto relative phase dynamics is to leverage the tools available to deal with fixed-point attractors, including and foremost when randomness is considered [@schöner1986].
+
+The oscillator has a preferred frequency at which it oscillates spontaneously. To observe synchronization between the oscillator and a forcing (*i.e.*, $\dot\phi\approx0$), the frequency of the forcing sequence must be close to the preferred frequency but not necessarily identical to it. In fact, there is a coupling strength that pulls the oscillator's frequency towards that of the forcing even when there is a difference between them. This allows synchronization to occur for a certain range of forcing frequencies, centered around the preferred frequency of the oscillator, and this range is called synchronization region or *Arnold tongue*. The width of this synchronization region depends on the coupling strength between the oscillator and the forcing; the greater the coupling, the greater the range of frequencies [@arnold1961; for a review, see @pikovsky2001]. This is valid for any self-sustained oscillator, it is a generic property. This enables us to understand a significant part of the dynamics without knowing in full detail the oscillator's properties. This boils down to deciphering the qualitative dynamics of synchronization, even in the absence of detailed experimental knowledge of the substrate [@kelso1995; see also @haken1988a] and turns an immensely complex problem into a tractable one. It is noteworthy that the family of concepts and mathematical techniques involved here is widespread across displines, like psychology, neurosciences, physics, robotics, automatic control, chemistry, economics, and ecology. However, beyond this minimal approach, further dimensions can be encapsulated in the model, for instance frequency adaptation, which is very relevant for human synchronization [*e.g.*, @righetti2006; @nordham2018; @savinov2021; @roman2023].
+
+## Relative Phase and Asynchrony
+
+In this analysis, we will use both relative phase and asynchrony to express the same relationship, but in different units (respectively radians and ms).
+
+1.  **Relative phase (**$\phi$)
+
+    The relative phase $\phi$ describes the position of a participant's tap within the timing cycle of the metronome beat. Each movement cycle and metronome event can be mapped onto a circular space, where the metronome beat represents the "reference point" (*i.e.*, at angle 0 radians). The participant's tap is then assigned a position on this circle based on when it occurs within the metronome-beat cycle. Relative phase is expressed in radians, typically bounded within the range $[-\pi, \pi]$, where:
+
+    -   In-phase synchronization corresponds to a relative phase of 0 radians, meaning the tap occurs exactly at the metronome beat.
+    -   When the participant's tap is exactly in between two metronome beats (anti-phase), the relative phase is $\pm\pi$ radians.
+    -   Negative values indicate that the tap occurred before the metronome beat.
+    -   Positive values indicate that the tap occurred after the metronome beat.
+
+    As a circular measure, relative phase is advantageous for analyzing repeated cycles because it avoids discontinuities typical in linear measures which might lead to incoherent calculations.
+
+2.  **Asynchrony**
+
+    Asynchrony measures the temporal difference, expressed in milliseconds (ms), between a participant's tap and the metronome beat. As for the relative phase measure, negative values indicate that the tap occurred before the metronome beat while positive values indicate that the tap occurred after the metronome beat.
+
+![Illustration of the relationship between relative phase (orange) and asynchrony (blue). Relative phase represents the angular position of a tap within the metronome cycle (measured in radians), while asynchrony represents the temporal difference between tap and metronome beat (measured in ms). A value of zero for both measures indicates perfect in-phase synchronization.](Rmd_utils/relative_phase_radians.png){#relative_phase_vs_asynchrony .Figure fig.scap="Illustration of the relationship between relative phase and asynchrony."}
+
+### Key equations
+
+The relative phase $\phi$ was calculated using MATLAB as
+
+$$\phi = 2 \pi\frac{\text{tap}_j - \text{stimuli}_i}{\text{stimuli}_{i+1} -\text{stimuli}_i} \mod 2\pi,\tag{1}$$where
+
+-   $\text{stimuli}_{i}$ is the time (in ms) of the most recent metronome beat before the participant's tap,
+-   $\text{stimuli}_{i+1}$ is the time (in ms) of the upcoming metronome beat after the participant's tap,
+-   $\text{tap}_j$ is the time (in ms) of the participant's tap,
+-   the $\mod 2\pi$ operation allows to have relative phase values bounded in the range $[-\pi, \pi]$.
+
+The conversion between relative phase and asynchrony can be done using the following formula:$$\text{asynchrony} = \frac{\phi}{2\pi} \times T, \tag{2}$$where $\phi$ is the relative phase in radians and $T$ is the period in seconds between two consecutive stimuli.
+
+As mentioned earlier, relative phase values are angular quantities, and their periodicity must be taken into account when computing summary statistics. Specifically, the mean asynchrony cannot be calculated by directly averaging individual asynchrony values. Instead, we first calculate the mean relative phase $\langle\phi\rangle$ using circular statistics, as follows[@mardia1972]: $$\langle\phi\rangle = \arg \left( \frac{1}{n} \sum_{i=1}^n e^{i\phi_i} \right),\tag{3}$$where $\arg(\cdot)$ denotes the polar angle of the complex number, and $n$ is the number of observations. This circular mean is then converted from radians to milliseconds as per Equation (2).
+
+Similarly, the dispersion of relative phase cannot be quantified using the arithmetic standard deviation. Instead, we compute the circular standard deviation of the relative phase (we will refer to this variable as SD $\phi$) as [@mardia1972]: $$\text{SD } \phi = \sqrt{-2\ln\left(\left\lvert\frac{1}{n}\sum_{i=1}^ne^{i\phi_i}\right\rvert\right)}\tag{4},$$where $\vert\cdot\vert$ denotes the absolute value. Cicular statistics were computed using the `circular` package [@agostinelli2025].
+
+### Remarks on the two measures of timing
+
+On the one hand, relative phase is readily compatible with a well-grounded and consensual framework across disciplines, based on dynamical systems, ordinary differential equations, and further the inclusion of random fluctuations [not introduced here, see @schöner1986; @schöner1988; @kelso1995] . On the other hand, asynchrony in ms—therefore a time duration—enables modelling which cares with absolute timing, and fits in naturally with our thinking about time processing, along with reaction time, or time constraints coming from propagation of activity in neurons.
+
+The framework of forced or coupled oscillators so to speak is a way to model timing in biological functions without handling time durations. Phase being a dimension, or a mode, which is simply being pushed or pulled locks-in to perceived events thus enables significant adaptation for directed behavior. This way duration per se is reformulated, its treatment circumvented, in contrast with difference equations modelling dealing with periods and time asynchrony, or diffusion-drift models of ticking clocks.
+
+## Statistical analyses
+
+The statistical analyses performed in this document were conducted using linear mixed models. Each participant performed several trials of each task, providing multiple estimates of our variables of interest. These repeated observations violate the assumption of independence of the observation, required for classical inferential tests. While we could average values across trials by participants for each condition, doing so would have discarded an important part of the data inherent variability. Consequently, we chose to rely on linear mixed models, which allow us to include all available data while accounting for intra-individual variability through random effects [for an introduction, see @gelman2007]. This approach seems all the more relevant in the current study which adopted a comparative methodology.
+
+Linear mixed models were fitted using the `lmerTest` package [@kuznetsova2017], which extends the `lme4` package [@bates2015] to give $p$-values alongside the estimates. Models were estimated using restricted maximum likelihood (REML) and degrees of freedom were calculated using Satterthwaite approximation [@satterthwaite1946] to mitigate Type 1 error [@luke2017]. For each model, assumptions of linearity, homoscedasticity and normality of residuals were assessed using diagnostic plots [see @gelman2007 and @faraway2015].
+
+When several different models were available, the possible structures of the fixed and random effects were selected based on theoretical considerations and empirical observations. For example, frequency was treated as categorical when relationships exhibited nonlinear patterns and as continuous when relationships appeared approximately linear, following @gelman2007 recommendations. The most plausible model was then determined based on an information-theoretical framework, using AICc to compute each model weights using the `compare_performance` function from the `performance` package [@lüdecke2021]. Using the AICc weights to choose the best model follows the recommendations from @burnham2004 (even though, in practice, both AIC, AICc and BIC weights favored the same models in our analyses), thereby estimating the relative support for each model given the data.
+
+To avoid over-interpretation of the results and to cope with the objective of robust science, the reporting of statistical results was made following the recommendations delineated @greenland2016. We emphasize that $p$-values should be interpreted and reported as continuous measures of compatibility between data and statistical models rather than as binary indicators of "significant" versus "non-signficant" effects. Cohen's $d$ effect sizes with 95% confidence intervals were calculated using `pairs` function from the `emmeans` package [@russell2025]. The $p$-value for multiple testing was corrected using @Bon correction (see `PRG/utils.R)`.
+
+### Software and computational environment
+
+All analyses and visualizations were performed using R (version 4.3.2). The following packages and their versions were used:
+
+-   `lmerTest` (version 3.1-3): Linear mixed effects model fitting and inference
+-   `lme4` (version 1.1-35.1): Core mixed-effects modeling framework
+-   `emmeans` (version 1.9.0): Estimated marginal means and post-hoc comparisons
+-   `performance` (version 0.10.8): Model diagnostics and comparison
+-   `circular` (version 0.5-0): Circular statistics computations
+-   `ggplot2` (version 3.5.1): Data visualization
+-   `tidyverse` (version 2.0.0): Data manipulation
+
+\newpage
+
+# Dynamics of synchronization
+
+```{r load_data}
+df_raw_data <- read.csv("DAT/tbl_relphase.txt", stringsAsFactors = TRUE)
+df_raw_data$task_number <- factor(df_raw_data$task_number)
+```
+
+## Identifying Synchronized Plateaus {data-link="Operationalizing: Identifying Synchronized Plateaus"}
+
+In the subsequent analyses, we wanted to compare qualitatively and quantitatively synchronization dynamics in Indian and French participants. Different levels of analyses were used for this purpose, *e.g.*, by observing the evolution of a measure with frequency by keeping all trials, or by taking a measurement when synchronization is stable. In the latter case, it is necessary to select plateaus where participants exhibited stable synchronization as defined in the theoretical section (see [Definitions]). This section describes the inclusion criteria applied to identify synchronized plateaus.
+
+1.  **Exclude initial adjustment period.**
+
+    Participants require time to adjust to changes in metronome frequency at the start of each plateau. To minimize measurement errors during this adjustment phase, the first three taps of each plateau are excluded.
+
+2.  **Ensure constant phase relationship (dwell time criterion).**
+
+    Synchronization requires maintaining a constant phase relationship. The dwell time [hereinafter referred to as DT, @kelso2009; @zelic2012] measures the percentage of relative phase values where the smoothed time derivative (3^rd^ order median filter, then 4 points moving average) is below a predefined threshold (0.2, determined by visual inspection; see Matlab codes). Plateaus with a dwell time of less than 50% are excluded as they indicate instability (the threshold was also determined by visual insepction).
+
+3.  **Exclude reactive responses.**
+
+    Participants who simply react to the metronome rather than synchronize with it are excluded. Reactive responses are identified by calculating the mean asynchrony (ms; see [Key equations] section). Plateaus where the absolute mean asynchrony is greater than 150 ms are excluded, as these large deviations indicate a failure to synchronize.
+
+```{r create_df_sync_data}
+df_sync_data <- df_raw_data %>%
+  # 1. Exclude initial adjusment period
+  filter(tap > 3) %>%
+  # 2. Ensure constant phase relationship
+  filter(DT > 50) %>%
+  # 3. Exclude reactive responses
+  group_by(group, subject, task, task_number, frequency) %>%
+  mutate(
+    mean_async = mean.circular(circular(relphase)) / (2 * pi) / frequency * 1000
+  ) %>%
+  filter(abs(mean_async) < 150) %>%
+  dplyr::select(
+    group, subject, task, task_number, tap, frequency, relphase
+  ) %>%
+  ungroup()
+```
+
+This filtered dataset allows us to focus on the comparison of synchronized plateaus only. Figure \@ref(fig:plt-nb-sync-trials) shows a summary of the synchronized trials, grouped by participant group and metronome frequency.
+
+```{r plt-nb-sync-trials, echo=FALSE, fig.width=10, fig.asp=0.9, out.width="60%", fig.scap="Percentage of synchronized trials as a function of metronome frequency", fig.cap="Percentage of synchronized trials as a function of metronome frequency for French and Indian groups. The horizontal dotted line represents 50% of synchronized trials. Data show that less than half of the trials are synchronized from 3.7 Hz onward for French participants and from 4.0 Hz onward for Indian participants."}
+df_raw_data %>%
+  # The same criteria described above are applied
+  filter(tap > 3 & !is.na(DT)) %>%
+  group_by(group, subject, task, task_number, frequency) %>%
+  summarise(
+    mean_DT = mean(DT), # same DT in a plateau, we can average
+    mean_relphase = mean.circular(circular(relphase)),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    mean_async = mean_relphase / (2 * pi) / frequency * 1000,
+    sync = ifelse(
+      mean_DT > 50 & abs(mean_async) < 150, "yes", "no"
+    )
+  ) %>%
+  # Calculate % of synchronized plateau per frequency and group
+  group_by(group, frequency) %>%
+  summarise(
+    yes = sum(sync == "yes"),
+    total = n(),
+    .groups = "drop"
+  ) %>%
+  mutate(yes = yes / total * 100) %>%
+  # Plot the results
+  ggplot(aes(y = yes, x = frequency)) +
+  geom_line(aes(color = group), linewidth = 1.5) +
+  geom_hline(yintercept = 50, linetype = "dashed") +
+  scale_y_continuous(
+    breaks = seq(0, 100, by = 20),
+    limits = c(0, 100)
+  ) +
+  scale_x_continuous(
+    breaks = seq(1.0, 6.1, by = 0.6),
+    minor_breaks = seq(1.0, 6.1, by = 0.3),
+    guide = "axis_minor"
+  ) +
+  scale_color_manual(values = c(FR, IN)) +
+  labs(x = "Frequency (Hz)", y = "% synchronized trials") +
+  theme(
+    legend.position = "bottom",
+    ggh4x.axis.ticks.length.minor = rel(0.5)
+  )
+```
+
+From 3.7 Hz onward, there were less than half of the trials that were synchronized for French participants. For Indian participants, it is from 4.3 Hz that we observe this.
+
+\newpage
+
+## Frequency mismatch $\Delta\omega$
+
+The frequency mismatch (hereinafter referred to as $\Delta \omega$) corresponds to the difference between the movement frequency and the metronome frequency. It is a sensitive marker of the synchronization dynamics since even a small frequency mismatch is indicative of a loss of synchronization [@kelso1990; @pikovsky2001]. In fact, $\Delta\omega$ measures the slope of the $\phi$ time series, and by definition (see [Definitions] section), stable synchronization occurs when $\Delta\omega=0$.
+
+It is important to note that this $\Delta \omega$ is distinct from the detuning (*i.e.*, the difference between the preferred frequency of the oscillator and the forcing frequency) discussed in the theoretical section (see [Definitions] section). Due to the coupling strength between the oscillator and the forcing signal, we may observe a frequency mismatch $\Delta\omega$ close to zero even when the detuning is substantial—that is, synchronization can occur within the Arnold tongue despite an important difference between the forcing frequency the preferred frequency.
+
+With this analysis, we want to gain information about synchronization dynamics by studying *where synchronization fails*. Synchronized plateaus are characterized by $\Delta\omega \approx 0$, which provides little information in this level of analysis; here, we are interested in plateaus where $\vert\Delta\omega\vert\gg0$. By convention, positive frequency mismatch indicates that the frequency of the movement is faster than that of the metronome.
+
+```{r create_df_freq_mis}
+df_freq_mis <- df_raw_data %>%
+  # Remove initial taps
+  # Participants adjust to the metronome new frequency
+  filter(tap > 3) %>%
+  # Calculate average movement frequency
+  group_by(group, subject, task, task_number, frequency) %>%
+  summarise(
+    freq = 1 / mean(period, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  # Calculate the frequency mismatch
+  mutate(freq_mis = freq - frequency)
+```
+
+```{r plt-freqmis, echo=FALSE, warning=FALSE, fig.asp=0.6, fig.scap="Distribution of $\\Delta\\omega$ across metronome frequencies", fig.cap="Distribution of frequency mismatch ($\\Delta\\omega$; in Hz) across metronome frequencies for French and Indian groups. Boxplots show interquartile range and median values, with whiskers extending to values within 1.5 IQR. Positive values indicate that participant movement frequency exceeded metronome frequency. Seven outliers were excluded for visual clarity."}
+# Some outliers will not be shown in the figure
+# Simply setting the y-limits with ggplot will calculate
+# median and IQR from displayed values only
+# We need to compute boxplot variables with all values before
+plt_freq_mis_boxplot_stats <- merge(
+  df_freq_mis,
+
+  # Calculate Q1, Q2 and Q3 on the whole samples
+  df_freq_mis %>%
+    group_by(frequency, group) %>%
+    get_summary_stats(
+      freq_mis,
+      show = c("q1", "median", "q3", "iqr")
+    )
+) %>%
+  mutate(frequency = sprintf("%.1f", frequency)) %>%
+  # Find the minimum and maximum value for the whiskers
+  # in the interval [q1 - 1.5 * IQR, q3 + 1.5 * IQR]
+  filter(
+    freq_mis >= q1 - 1.5 * iqr & freq_mis <= q3 + 1.5 * iqr
+  ) %>%
+  group_by(frequency, group) %>%
+  summarise(
+    ymin = min(freq_mis),
+    q1 = unique(q1),
+    median = unique(median),
+    q3 = unique(q3),
+    ymax = max(freq_mis),
+    .groups = "drop"
+  )
+
+plt_freq_mis <- df_freq_mis %>%
+  mutate(frequency = sprintf("%.1f", frequency)) %>%
+  ggplot(
+    aes(
+      x = factor(frequency), y = freq_mis,
+      fill = group
+    )
+  ) +
+  geom_point(
+    aes(color = group),
+    position = position_jitterdodge(),
+    alpha = 0.3, size = 1.3
+  ) +
+  geom_boxplot(
+    data = plt_freq_mis_boxplot_stats,
+    aes(
+      fill = group, y = NULL,
+      ymin = ymin, ymax = ymax,
+      lower = q1, middle = median, upper = q3
+    ),
+    stat = "identity",
+    width = 0.6, linewidth = .9,
+    position = position_dodge(width = 0.75)
+  ) +
+  geom_hline(
+    yintercept = 0,
+    linetype = "longdash", color = "grey20",
+    linewidth = 1.2, alpha = .8
+  ) +
+  scale_y_continuous(limits = c(-2.4, 1.5)) +
+  scale_fill_manual(
+    values = c("transparent", "transparent"),
+    guide = "none" # Exclude from legend
+  ) +
+  scale_color_manual(
+    values = c("French" = FR, "Indian" = IN),
+    guide = guide_legend(override.aes = list(
+      size = 5,
+      alpha = 1
+    ))
+  ) +
+  labs(
+    y = expression(Delta ~ omega ~ (Hz)),
+    x = "Frequency (Hz)"
+  ) +
+  theme(legend.position = "bottom")
+
+plt_freq_mis
+```
+
+#### Linear mixed model structure
+
+We want to analyze how frequency mismatch evolved with frequency for each group and how the difference of frequency mismatch between groups evolved with metronome frequency. Given the nonlinear evolution of frequency mismatch with frequency (Figure \@ref(fig:plt-freqmis)), the frequency was included as a categorical variable [@gelman2007, Chapter 4.5]. Before fitting the model, we had to determine whether the linear mixed model should contain random intercepts only (value at 1.0 Hz varying for each participant; `RI`), or random intercept and slope (evolution of frequency mismatch with frequency varying for each participant as well). Since frequency was included as a categorical variable, the random slope was formalized by a random intercept at each frequency (`RIN`; `N` stands for nested).
+
+```{r lmm-freqmis-models, message=FALSE}
+list_models_freq_mis <- list(
+  RI = lmer(
+    freq_mis ~ frequency * group + (1 | subject),
+    data = df_freq_mis %>%
+      mutate(frequency = as.factor(frequency))
+  ),
+  RIN = lmer(
+    freq_mis ~ frequency * group + (1 | subject:frequency),
+    data = df_freq_mis %>%
+      mutate(frequency = as.factor(frequency))
+  )
+)
+
+kable(
+  format_model_comparison(
+    compare_performance(
+      list_models_freq_mis$RI,
+      list_models_freq_mis$RIN,
+      verbose = FALSE
+    )
+  ) %>%
+    mutate(Model = c("RI", "RIN")),
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Model comparison for $\\Delta\\omega$ analysis",
+  caption = "Model comparison for frequency mismatch ($\\Delta\\omega$; in Hz) analysis. The table shows the AIC, AICc, and BIC values with their weights, as well as the marginal and conditional $R^2$ values."
+) %>%
+  kable_styling(latex_options = c("hold_position", "scale_down"))
+```
+
+The model with random intercept and slope outperformed the model with random slope only based on AICc and its associated model weights (Table \@ref(tab:lmm-freqmis-models)). Therefore, we analyzed the variation of frequency mismatch across groups and frequencies with the following linear mixed model:$$\text{frequency mismatch} \sim \text{group} \times \text{frequency} + (1 \mid \text{subject}:\text{frequency}),\tag{5}$$where *frequency* is a categorical variable with levels 1.0 Hz to 6.1 Hz every 0.3 Hz, and *group* is either *French* or *Indian*.
+
+```{r lmm_frequency_mismatch}
+df_freq_mis_lm <- df_freq_mis %>%
+  mutate(frequency = as.factor(frequency))
+
+lmm_freq_mis <- lmer(
+  freq_mis ~ group * frequency + (1 | subject:frequency),
+  data = df_freq_mis_lm
+)
+```
+
+#### Assumptions checking
+
+```{r lmm-freqmis-assumptions, fig.asp=0.6, out.width="80%", fig.scap="Diagnostic plots for $\\Delta \\omega$ analysis", fig.cap="Diagnostic plots assessing linear mixed model assumptions for frequency mismatch ($\\Delta \\omega$; in Hz) analysis. \\textbf{(A)} Residuals versus fitted values; \\textbf{(B)} normal Q-Q plot for residuals; \\textbf{(C)} histogram of residuals; \\textbf{(D)} individual random effect coefficients for intercept by group; \\textbf{(E)} normal Q-Q plot for random effects; \\textbf{(F)} histogram of random effects. Results indicate satisfactory model fit despite deviations from normality in residual distribution."}
+lm_assumptions_check(lmm_freq_mis)
+```
+
+The diagnostic plots (Figure \@ref(fig:lmm-freqmis-assumptions)) indicate that all model assumptions were satisfactorily met; although results from inferential testing should be interpreted with some awareness since deviations from normality of the residuals were observed in the Q-Q plot.
+
+#### Results
+
+The estimated marginal means and associated standard error for each group at each frequency are presented in Table \@ref(tab:lmm-freqmis-fixef-coeffs). The differences between groups at each frequency are presented in Table \@ref(tab:lmm-freqmis-fixef-diff). Information regarding the model fit can be found in Table \@ref(tab:lmm-freqmis-ranef).
+
+```{r lmm-freqmis-fixef-coeffs}
+lmm_freq_mis_emmeans <- as.data.frame(
+  emmeans(lmm_freq_mis, ~ group | frequency)
+) %>%
+  mutate(
+    frequency = sprintf("%.1f", as.numeric(as.character(frequency)))
+  )
+
+kable(
+  format_df_emmeans(
+    lmm_freq_mis_emmeans,
+    condition = "frequency",
+    n_digits = 3
+  ) %>%
+    setNames(c(
+      "Condition", "Estimate (Hz)", "95\\% CI", "SE",
+      "Estimate (Hz)", "95\\% CI", "SE"
+    )),
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Group-specific $\\Delta\\omega$ estimated marginal means",
+  caption = "Group-specific frequency mismatch ($\\Delta\\omega$; in Hz) estimated marginal means. Estimates represent average frequency mismatch values for each condition and group with 95\\% confidence interval and standard errors."
+) %>%
+  add_header_above(c(" " = 1, "French" = 3, "Indian" = 3)) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+```{r lmm-freqmis-fixef-diff}
+kable(
+  format_df_contrast(
+    emmeans(lmm_freq_mis, ~ group | frequency),
+    lmm_freq_mis,
+    "frequency",
+    n_digits = 3
+  ) %>%
+    setNames(c(
+      "Frequency", "Difference (Hz)", "SE", "DF",
+      "$t$-value", "$p$-value", "$d$", "95\\% CI"
+    )) %>%
+    mutate(
+      Frequency = sprintf("%.1f", as.numeric(as.character(Frequency)))
+    ),
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Pairwise comparisons between French and Indian participants average $\\Delta\\omega$",
+  caption = "Pairwise comparisons between French and Indian groups' average frequency mismatch ($\\Delta\\omega$; in Hz). Positive difference indicates higher frequency mismatch for French participants compared to Indian participants. Difference shown at each frequency with standard error, degrees of freedom, $t$-value and $p$-value."
+) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+```{r lmm-freqmis-ranef}
+lmm_freq_mis_ranef <- create_df_ranef_intercept(lmm_freq_mis)
+
+kable(
+  lmm_freq_mis_ranef,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Random effects and model fit for $\\Delta \\omega$ analysis",
+  caption = "Random effects and model fit statistics for frequency mismatch ($\\Delta \\omega$; in Hz) analysis. Displaying variance and standard deviation components, intraclass correlation for random effect and explanatory power metrics."
+) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+#### Interpretation
+
+The frequency mismatch $\Delta\omega$ analysis reveals both population-level patterns and substantial individual differences. Key findings include:
+
+1.  **Evolution with frequency by group**: Both groups showed minimal $\Delta\omega$ at slow frequencies (below 3.4 Hz). Then French participants maintained positive $\Delta\omega$ at moderate-to-high frequencies, while Indian participants exhibited more modest $\Delta\omega$ and transitioned to negative values earlier compared to French participants (Figure \@ref(fig:plt-freqmis), Table \@ref(tab:lmm-freqmis-fixef-coeffs)).
+2.  **Difference between groups**: Since the $\Delta\omega$ was minimal for both groups at low frequencies (below 3.4 Hz), we observed no clear difference. The groups $\Delta\omega$ estimates diverged more at higher frequencies, with the most substantial between-group differences emerging above 4.6 Hz and peaking at 5.5 Hz (Table \@ref(tab:lmm-freqmis-fixef-diff)).
+
+\newpage
+
+## SD $\phi_\text{all}$
+
+When studying dynamical systems, we are mainly interested in stable states of a system [@schöner1988]. The study of such stables states is allowed by varying parameters of the system. By doing so, the stable states of the system can change abruptly: they shift, disappear or new stable states are created. These qualitative changes of the system are called bifurcations [@strogatz2024] and can be identified notably by increased fluctuations of the collective variable [@schöner1986; @schöner1988].
+
+In our experiment, the stable state corresponds to a stable synchronization, in turn defined by frequency and phase locking, or entrainment [@schäfer1999]. We expected participants to synchronize easily at low frequencies, and that synchronizing became increasingly challenging as the metronome frequency increased. Here, we are interested in the breakdown of this stable state by increasing the frequency of the metronome.
+
+According to our [Definitions], synchronization corresponds to a constant phase relationship in time. Such synchronization is then characterized by minimal fluctuations in the relative phase $\phi$, observable through low dispersion. Consequently, we quantify synchronization quality by measure the circular standard deviation of the relative phase: lower SD $\phi$ values reflect stronger synchronization [@schöner1986; @kelso1990]. A marker of the expected loss of synchronization is a sudden increase in the dispersion of $\phi$. As soon as frequency locking is lost, the phase difference is no longer stationary, hence $\dot\phi$ departs from zero and this affects the dispersion of $\phi$ values.
+
+We chose to express the dispersion of values using $\phi$ values in radians (as per Eq. (4)) rather than converting them to ms. This decision was motivated by two factors:
+
+1.  In the dynamical system approach, the dispersion of $\phi$—and not of asynchronies—is used as a measure of stability.
+2.  As the frequency of the metronome increases, the time interval between two consecutive stimuli becomes smaller. Consequently, if we were to express the dispersion in ms, it would artificially diminish with increasing frequency, introducing a bias in our results, making it appear as though the dispersion decreases simply due to the short time intervals rather than reflecting the true synchronization dynamics (see Figure \@ref(fig:plt-disp-rad-ms)).
+
+```{r plt-disp-rad-ms, fig.asp=0.6, fig.width=12, out.width="80%", echo=FALSE, fig.scap="Comparison of synchronization variability measures using circular standard deviation (SD) of relative phase versus linear SD of asynchrony across metronome frequencies", fig.cap="Comparison of synchronization variability measures using circular standard deviation (SD) of relative phase in radians (upper panel) versus linear SD of asynchrony in milliseconds (lower panel) across metronome frequencies. The circular measure captures synchronization dynamics more completely, showing increased variability with frequency, while the linear measure artificially decreases until 3.1 Hz due to shorter inter-beat intervals at higher frequencies."}
+df_raw_data %>%
+  filter(tap > 3) %>%
+  group_by(group, subject, task, task_number, frequency) %>%
+  summarise(Circular = sd.circular(relphase), .groups = "drop") %>%
+  mutate(Time = Circular / (2 * pi) / frequency * 1000) %>%
+  pivot_longer(cols = c(Circular, Time)) %>%
+  ggplot(aes(x = as.factor(frequency), y = value)) +
+  geom_boxplot() +
+  facet_wrap(~name, ncol = 1, scales = "free_y") +
+  labs(x = "Frequency (Hz)", y = "SD value")
+```
+
+To summarize, examining the evolution of SD $\phi$ with frequency provides valuable insight into the process by which synchronization breaks down. We anticipate that approaching the limit of synchronization will be marked by a sharp increase in SD $\phi$, indicative of a loss of stable synchronization.
+
+```{r plt-evolution-sd, echo=FALSE, fig.asp=0.6, fig.scap="Distribution of SD $\\phi_\\text{all}$ across metronome frequencies", fig.cap="Distribution of the standard deviation of relative phase for all plateaus (SD $\\phi_\\text{all}$, in radians) across metronome frequencies for French and Indian groups. Boxplots show interquartile range and median values, with whiskers extending to values within 1.5 IQR. Both groups exhibit consistently low variability from 1.0 to 3.7 Hz, with a marked increase in median SD $\\phi$ at 4.0 Hz, indicating loss of stable synchronization."}
+# ---- OBSERVE EVOLUTION OF SD PHI WITH FREQUENCY ----
+plt_evolution_sd_relphase_all <- df_raw_data %>%
+  # The three first taps of each plateaus are not taken into account
+  # We consider that the participants needs them to synchronize with the new frequency of the metronome
+  filter(tap > 3) %>%
+  # Calculate the relative SD for each trial at each frequency
+  group_by(group, subject, task, task_number, frequency) %>%
+  summarise(SD = sd.circular(relphase), .groups = "drop") %>%
+  # Formatting frequency with one decimal precision for plotting
+  mutate(frequency = sprintf("%.1f", frequency)) %>%
+  ggplot(aes(x = factor(frequency), y = SD, fill = group)) +
+  geom_point(
+    aes(group = group, color = group),
+    position = position_jitterdodge(),
+    alpha = 0.3, size = 1.3
+  ) +
+  geom_boxplot(linewidth = .7, outliers = FALSE) +
+  scale_fill_manual(
+    values = c("transparent", "transparent"),
+    guide = "none"
+  ) +
+  scale_color_manual(
+    values = c(FR, IN),
+    guide = guide_legend(override.aes = list(
+      size = 5,
+      alpha = 1
+    ))
+  ) +
+  labs(x = "Frequency (Hz)", y = expression(SD ~ phi)) +
+  theme(
+    legend.position = "bottom"
+  )
+plt_evolution_sd_relphase_all
+```
+
+In Figure \@ref(fig:plt-evolution-sd), we observe consistent low SD $\phi$ values for both groups between 1.0 and 3.7 Hz. At 4.0 Hz, the median of SD $\phi$ increased for both groups, indicating a loss of synchronization.
+
+Another noticeable feature is the presence of outliers exhibiting high dispersion values at low frequencies, mostly Indian participants. This confirms the observation with frequency mismatch values, some Indian participants struggled to synchronize even at 1.0 Hz.
+
+\newpage
+
+## Rate limit of synchronization
+
+Observing the evolution of SD $\phi$ provides general insights into synchronization dynamics at the group level. To get a more detailed analysis on the frequency where the loss of synchronization occurs, we identified the rate limit of synchronization for each individual trial. Specifically, for each trial, we determined the rate limit of synchronization as the highest metronome frequency at which a participant maintained stable synchronization (see [Identifying Synchronized Plateaus]).
+
+In our data set, two synchronization tasks were performed: *sync* and *syncslow*; differing only by their maximum metronome frequencies (6.1 Hz and 4.0 Hz respectively). In this analysis, only data from the *sync* task were used to accurately determine the participants' actual synchronization rate limit; if participants could synchronize above 4.0 Hz, the *syncslow* couldn't provide any information regarding this rate limit.
+
+Additionally, our analysis of frequency mismatch revealed that frequency mismatch is substantially positive—notably for French participants—up to approximately 4.3 Hz before turning negative for most trials (Figure \@ref(fig:plt-freqmis)). This suggests that participants might have temporarily lost synchronization for several plateaus before briefly regaining synchronization for one plateau at higher frequencies, when frequency mismatch crossed 0. To further investigate this phenomenon, we also counted for each task the number of frequencies where participants successfully synchronized, enabling us to investigate potential relationships between synchronization rate limit and synchronized frequencies count (see [Relationship between variables] section).
+
+```{r}
+df_rate_limit <- df_sync_data %>%
+  filter(task == "sync") %>%
+  dplyr::select(-c(task)) %>%
+  group_by(group, subject, task_number) %>%
+  summarise(
+    MSF = max(frequency),
+    SFC = n_distinct(frequency),
+    .groups = "drop"
+  )
+```
+
+### Maximum Synchronized Frequency (MSF)
+
+#### Linear mixed model structure
+
+We fitted a linear mixed model predicting the MSF from group membership, with random intercepts for each participant to account for inter-individual variability. This was the only structure possible, so there is no model comparison. This model was defined as follows: $$\text{MSF} \sim \text{group} + ( 1 \mid \text{subject}).\tag{6}$$
+
+```{r}
+lmm_msf <- lmer(
+  MSF ~ group + (1 | subject),
+  data = df_rate_limit
+)
+```
+
+#### Assumptions checking
+
+```{r lmm-msf-assumptions, fig.asp=0.6, out.width="80%", fig.scap="Diagnostic plots for Maximum Synchronized Frequency analysis", fig.cap="Diagnostic plots assessing linear mixed model assumptions for  Maximum Synchronized Frequency (MSF) analysis. \\textbf{(A)} Residuals versus fitted values; \\textbf{(B)} normal Q-Q plot for residuals; \\textbf{(C)} histogram of residuals; \\textbf{(D)} individual random effect coefficients for intercept by group; \\textbf{(E)} normal Q-Q plot for random effects; \\textbf{(F)} histogram of random effects. All assumptions were satisfactorily met."}
+lm_assumptions_check(lmm_msf, n_breaks = c(20, 10))
+```
+
+The diagnostic plots (Figure \@ref(fig:lmm-msf-assumptions)) indicate that all model assumptions were satisfactorily met.
+
+#### Results
+
+The estimated marginal means and the comparison between groups are presented in Table \@ref(tab:lmm-msf-fixef). Information regarding the model fit can be found in Table \@ref(tab:lmm-msf-ranef).
+
+```{r lmm-msf-fixef}
+kable(
+  format_df_means_and_comparison(emmeans(lmm_msf, ~group), lmm_msf),
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Group estimates and comparison for Maximum Synchronized Frequency analysis",
+  caption = "Group estimates and comparison between French and Indian groups for Maximum Synchronized Frequency (MSF; in Hz) analysis. The upper section shows group-specific estimates with 95\\% confidence intervals and standard errors; the lower section displays the between-group difference with standard error, degrees of freedom, $t$-value and $p$-value."
+) %>%
+  pack_rows(
+    index = c("Group Estimates" = 2, "Comparison" = 1)
+  ) %>%
+  kable_styling(
+    latex_options = c("hold_position", "scale_down")
+  )
+```
+
+```{r lmm-msf-ranef}
+lmm_msf_ranef <- create_df_ranef_intercept(lmm_msf)
+
+kable(
+  lmm_msf_ranef,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Random effects and model fit for Maximum Synchronized Frequency analysis",
+  caption = "Random effects and model fit statistics for Maximum Synchronized Frequency (MSF; in Hz) analysis. Displaying variance and standard deviation components, intraclass correlation for random effect and explanatory power metrics."
+) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+#### Interpretation
+
+The analysis of MSF revealed that French participants synchronized to higher frequencies than Indian participants (Table \@ref(tab:lmm-msf-fixef)). However, notice that in both groups, some participants managed to synchronize at 6.1 Hz which is the highest frequency of the metronome (Figure \@ref(fig:plt-msf-sfc))
+
+```{r plt-msf, message=FALSE}
+plt_msf <- df_rate_limit %>%
+  ggplot(aes(x = group, y = MSF)) +
+  geom_hline(
+    yintercept = 6.1,
+    linetype = "longdash", color = "grey20",
+    linewidth = 1.2, alpha = .8
+  ) +
+  geom_dotplot(
+    aes(, fill = group, color = group),
+    binaxis = "y", stackdir = "center",
+    alpha = .5, binwidth = 0.25
+  ) +
+  geom_pointrange(
+    data = as.data.frame(emmeans(lmm_msf, ~group)),
+    aes(
+      x = group, y = emmean,
+      ymin = emmean - SE, ymax = emmean + SE
+    ),
+    color = "black", size = 1.2, linewidth = 1.2
+  ) +
+  scale_y_continuous(breaks = seq(0.7, 6.1, by = 0.9), limits = c(0, 6.2)) +
+  scale_fill_manual(values = c(FR, IN)) +
+  scale_color_manual(values = c(FR, IN)) +
+  ylab("MSF (Hz)") +
+  theme(axis.title.x = element_blank())
+```
+
+\newpage
+
+### Synchronized Frequency Count (SFC)
+
+#### Linear mixed model structure
+
+We fitted a linear mixed model predicting the SFC from group membership, with random intercepts for each participant to account for inter-individual variability. This was the only structure possible (random and fixed effects), so there is no model comparison. This model was defined as follows: $$\text{SFC} \sim \text{group} + (1 \mid \text{subject}). \tag{7}$$
+
+```{r}
+lmm_sfc <- lmer(
+  SFC ~ group + (1 | subject),
+  data = df_rate_limit
+)
+```
+
+#### Assumptions checking
+
+```{r lmm-sfc-assumptions, fig.asp=0.6, out.width="80%", fig.scap="Diagnostic plots for Synchronized Frequency Count analysis", fig.cap="Diagnostic plots assessing linear mixed model assumptions for Synchronized Frequency Count (SFC) analysis. \\textbf{(A)} Residuals versus fitted values; \\textbf{(B)} normal Q-Q plot for residuals; \\textbf{(C)} histogram of residuals; \\textbf{(D)} individual random effect coefficients for intercept by group; \\textbf{(E)} normal Q-Q plot for random effects; \\textbf{(F)} histogram of random effects. All assumptions were satisfactorily met."}
+lm_assumptions_check(lmm_sfc, n_breaks = c(15, 10))
+```
+
+The diagnostic plots (Figure \@ref(fig:lmm-sfc-assumptions)) indicate that all model assumptions were satisfactorily met.
+
+#### Results
+
+The estimated marginal means and the comparison between groups are presented in Table \@ref(tab:lmm-sfc-fixef). Information regarding the model fit can be found in Table \@ref(tab:lmm-sfc-ranef).
+
+```{r lmm-sfc-fixef}
+kable(
+  format_df_means_and_comparison(emmeans(lmm_sfc, ~group), lmm_msf),
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Group estimates and comparison for Synchronized Frequency Count analysis",
+  caption = "Group estimates and comparison between French and Indian groups for Synchronized Frequency Count (SFC) analysis. The upper section shows group-specific estimates with 95\\% confidence intervals and standard errors; the lower section displays the between-group difference with standard error, degrees of freedom, $t$-value and $p$-value."
+) %>%
+  pack_rows(index = c("Group Estimates" = 2, "Comparison" = 1)) %>%
+  kable_styling(latex_options = c("hold_position", "scale_down"))
+```
+
+```{r lmm-sfc-ranef}
+lmm_sfc_ranef <- create_df_ranef_intercept(lmm_sfc)
+
+kable(
+  lmm_sfc_ranef,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Random effects and model fit statistics for  Synchronized Frequency Count analysis",
+  caption = "Random effects and model fit statistics for Synchronized Frequency Count analysis. Displaying variance and standard deviation components, intraclass correlation for random effect and explanatory power metrics."
+) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+#### Interpretation
+
+The analysis of SFC revealed no group effect.
+
+```{r, message=FALSE}
+plt_sfc <- df_rate_limit %>%
+  ggplot(aes(x = group, y = SFC)) +
+  geom_hline(
+    yintercept = 18,
+    linetype = "longdash", color = "grey20",
+    linewidth = 1.2, alpha = .8
+  ) +
+  geom_dotplot(
+    aes(color = group, fill = group),
+    binaxis = "y", stackdir = "center",
+    alpha = .5, binwidth = 0.7
+  ) +
+  geom_pointrange(
+    data = as.data.frame(emmeans(lmm_sfc, ~group)),
+    aes(
+      x = group, y = emmean,
+      ymin = emmean - SE, ymax = emmean + SE
+    ),
+    color = "black", size = 1.2, linewidth = 1.2
+  ) +
+  scale_y_continuous(limits = c(0, 18)) +
+  scale_fill_manual(values = c(FR, IN)) +
+  scale_color_manual(values = c(FR, IN)) +
+  ylab("SFC (Hz)") +
+  theme(
+    axis.title.x = element_blank(),
+    legend.position = "bottom"
+  )
+```
+
+```{r plt-msf-sfc, fig.asp=0.6, fig.scap="Maximum Synchronized Frequency and Synchronized Frequency count", fig.cap="Comparison of synchronization rate limits between French and Indian groups. \\textbf{(A)} Maximum Synchronized Frequency (MSF, in Hz); \\textbf{(B)} Synchronized Frequency Count (SFC, in Hz). Individual trial data points are shown with jitter, and black dots with error bars represent linear mixed model estimates with 95% confidence intervals. Grey dotted lines indicate maximum possible values (6.1 Hz for MSF, 15 frequencies for SFC)."}
+plot_grid(
+  plot_grid(
+    plt_msf + theme(legend.position = "none"),
+    NULL,
+    plt_sfc + theme(legend.position = "none"),
+    ncol = 3, rel_widths = c(1, 0.05, 1),
+    labels = c("A", "", "B"),
+    label_size = 20
+  ),
+  get_legend(plt_sfc),
+  ncol = 1, rel_heights = c(1, 0.1)
+)
+```
+
+\newpage
+
+## Asynchrony Comparison
+
+A second level of analysis is to only consider plateaus where participants were synchronized (see [Identifying Synchronized Plateaus]). By doing so, we can study the mean asynchrony (the time relationship between the tap and the metronome) since this variable has a meaning only if the relative phase time series is stationary; this was is our criteria to determine whether participants are synchronized. This also allowed us to compare the coupling strength and the stability of synchronization between French and Indian participants with the SD $\phi$ for synchronized plateaus only. The purpose of this analysis was to get a better understanding of the mechanisms at work when participants are synchronized with the metronome.
+
+We observed that there was a global loss of synchronization around 3.7 Hz (less than 50% of plateaus are synchronized, Figure \@ref(fig:plt-nb-sync-trials); sudden increase of SD, Figure \@ref(fig:plt-evolution-sd)). Therefore, we limited this analysis between 1.0 Hz and 3.7 Hz to ensure the estimates are representative for each group and not solely determined by outliers.
+
+```{r}
+df_async_by_task <- df_sync_data %>%
+  filter(frequency <= 3.7) %>%
+  group_by(group, subject, task, task_number, frequency) %>%
+  mutate(relphase = circular(relphase)) %>%
+  summarise(
+    mean_relphase = mean.circular(relphase),
+    sd_relphase = sd.circular(relphase),
+    .groups = "drop"
+  ) %>%
+  mutate(mean_async = as.numeric(mean_relphase) / (2 * pi) / frequency * 1000)
+```
+
+### Mean Asynchrony
+
+```{r plt-mean-async, echo=FALSE, warning=FALSE, fig.asp = 0.6, fig.width=12, out.width="90%", fig.scap="Evolution of the distribution of mean asynchrony across metronome frequencies", fig.cap="Evolution of the distribution of mean asynchrony (in milliseconds) across metronome frequencies for French and Indian groups. Boxplots display interquartile range and median, with whiskers extending to values within 1.5 IQR. Negative values indicate taps occurred before metronome beats; positive values indicate taps occurred after beats. The relationship between mean asynchrony and frequency seems non-linear, hence, frequency is included as a categorical predictor in the linear mixed model analysis."}
+# ---- PLOT FREQUENCY MISMATCH VALUES ----
+df_async_by_task %>%
+  mutate(frequency = sprintf("%.1f", frequency)) %>%
+  ggplot(
+    aes(
+      x = factor(frequency), y = mean_async,
+      fill = group
+    )
+  ) +
+  geom_point(
+    aes(color = group),
+    position = position_jitterdodge(),
+    alpha = 0.3, size = 2
+  ) +
+  geom_boxplot(outliers = FALSE, linewidth = .7) +
+  geom_hline(
+    yintercept = 0,
+    linetype = "longdash", color = "grey20",
+    linewidth = 1.2, alpha = .8
+  ) +
+  scale_color_manual(
+    values = c(FR, IN),
+    guide = guide_legend(override.aes = list(size = 5, alpha = 1))
+  ) +
+  scale_fill_manual(
+    values = c("transparent", "transparent"),
+    guide = "none"
+  ) +
+  labs(y = "Mean asynchrony (ms)", x = "Frequency (Hz)") +
+  theme(legend.position = "bottom")
+```
+
+#### Linear mixed model structure
+
+We want to analyze the evolution of the mean asynchrony with frequency for each group and the evolution with frequency of the difference of mean asynchrony between groups. Given the nonlinear evolution of frequency mismatch with frequency (Figure \@ref(fig:plt-mean-async)), the frequency was included as a categorical variable [@gelman2007, Chapter 4.5]. Before fitting the model, we had to determine whether the linear mixed model should contain random intercepts only (value at 1.0 Hz varying for each participant; `RI`), or random intercept and slope (evolution of mean asynchrony with frequency varying for each participant as well). Since frequency was included as a categorical variable, the random slope was formalized by a random intercept at each frequency (`RIN`; `N` stands for nested).
+
+```{r lmm-mean-async-models, message=FALSE, warning=FALSE}
+list_models_mean_async <- list(
+  RI = lmer(
+    mean_async ~ group * frequency + (1 | subject),
+    data = df_async_by_task %>%
+      mutate(frequency = as.factor(frequency))
+  ),
+  RIN = lmer(
+    mean_async ~ group * frequency + (1 | subject:frequency),
+    data = df_async_by_task %>%
+      mutate(frequency = as.factor(frequency))
+  )
+)
+
+kable(
+  format_model_comparison(
+    compare_performance(
+      list_models_mean_async$RI,
+      list_models_mean_async$RIN,
+      verbose = FALSE
+    )
+  ) %>%
+    mutate(Model = c("RI", "RIN")),
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Model comparison for mean asynchrony",
+  caption = "Model comparison for mean asynchrony The table shows the AIC, AICc, and BIC values with their weights, as well as the marginal and conditional $R^2$ values, the intraclass correlation coefficient (ICC), the root mean square error (RMSE), and the residual standard deviation ($\\sigma_r$) for each model."
+) %>%
+  kable_styling(latex_options = c("hold_position", "scale_down"))
+```
+
+The model with random intercept and slope outperformed the model with random slope only based on AICc and its associated model weights (Table \@ref(tab:lmm-mean-async-models)). Therefore, we analyzed the variation of frequency mismatch across groups and frequencies with the following linear mixed model:$$\text{mean asynchrony} \sim \text{group} \times \text{frequency} + (1 \mid \text{subject} : \text{frequency}),\tag{8}$$where *frequency* is a categorical variable, with levels 1.0 Hz to 3.7 Hz every 0.3 Hz and *group* is a categorical variable, either *French* or *Indian*.
+
+```{r}
+lmm_mean_async <- lmer(
+  mean_async ~ group * frequency + (1 | subject:frequency),
+  data = df_async_by_task %>% mutate(frequency = as.factor(frequency))
+)
+```
+
+#### Assumptions checking
+
+```{r lmm-meanasync-assumptions, fig.asp=0.6, out.width="80%", fig.scap="Diagnostic plots for mean asynchrony analysis", fig.cap="Diagnostic plots assessing linear mixed model assumptions for  mean asynchrony analysis. \\textbf{(A)} Residuals versus fitted values; \\textbf{(B)} normal Q-Q plot for residuals; \\textbf{(C)} histogram of residuals; \\textbf{(D)} individual (across participants and metronome frequency) random effect coefficients for intercept by group; \\textbf{(E)} normal Q-Q plot for random effects; \\textbf{(F)} histogram of random effects. All assumptions were satisfactorily met."}
+lm_assumptions_check(lmm_mean_async)
+```
+
+The diagnostic plots (Figure \@ref(fig:lmm-meanasync-assumptions)) indicate that all model assumptions were satisfactorily met, even though we notice slight deviations from the deviations of the normality for the residuals with the Q-Q plot (panel B).
+
+#### Results
+
+The estimated marginal means and associated standard error for each group at each frequency are presented in Table \@ref(tab:lmm-mean-async-fixef-coeffs). The differences between groups at each frequency are presented in Table \@ref(tab:lmm-mean-async-fixef-diff). Information regarding the model fit can be found in Table \@ref(tab:lmm-freqmis-ranef).
+
+```{r lmm-mean-async-fixef-coeffs}
+lmm_mean_async_emmeans <- as.data.frame(
+  emmeans(lmm_mean_async, ~ group | frequency)
+) %>%
+  mutate(
+    frequency = sprintf("%.1f", as.numeric(as.character(frequency)))
+  )
+
+kable(
+  format_df_emmeans(lmm_mean_async_emmeans,
+    condition = "frequency"
+  ) %>%
+    setNames(c(
+      "Condition", "Estimate (ms)", "95\\% CI", "SE",
+      "Estimate (Hz)", "95\\% CI", "SE"
+    )),
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Group-specific mean asynchrony estimated marginal means",
+  caption = "Group-specific mean asynchrony (ms) estimated marginal means. Estimates represent average mean asynchrony values for each condition and group with 95\\% confidence interval and standard errors."
+) %>%
+  add_header_above(c(" " = 1, "French" = 3, "Indian" = 3)) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+```{r lmm-mean-async-fixef-diff}
+kable(
+  format_df_contrast(
+    emmeans(lmm_mean_async, ~ group | frequency),
+    lmm_mean_async,
+    "frequency"
+  ) %>%
+    setNames(c(
+      "Frequency", "Difference (ms)", "SE", "DF",
+      "$t$-value", "$p$-value", "$d$", "95\\% CI"
+    )) %>%
+    mutate(
+      Frequency = sprintf("%.1f", as.numeric(as.character(Frequency)))
+    ),
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Pairwise comparisons between French and Indian participants mean asynchrony",
+  caption = "Pairwise comparisons between French and Indian participants mean asynchrony (ms). Positive difference indicates higher mean asynchrony for French participants compared to Indian participants. Difference shown at each frequency with standard error, degrees of freedom, $t$-value and $p$-value."
+) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+```{r lmm-meanasync-ranef}
+lmm_mean_async_ranef <- create_df_ranef_intercept(lmm_mean_async)
+
+kable(
+  lmm_mean_async_ranef,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Random effects and model fit for mean asynchrony analysis",
+  caption = "Random effects and model fit statistics for mean asynchrony (ms) analysis. Displaying variance and standard deviation components, intraclass correlation for random effect and explanatory power metrics."
+) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+```{r plt-mean-async-evol,fig.width=10, out.width="60%", fig.scap="Group estimates of mean asynchrony across metronome frequencies", fig.cap="Estimated marginal means of mean asynchrony (in milliseconds) from the linear mixed model across metronome frequencies for French and Indian groups. Points represent model estimates, and error bars indicate 95% confidence intervals. Both groups show relatively constant asynchrony until 2.2 Hz, followed by linear increase with frequency. At all frequencies, French participants exhibit more negative asynchrony values compared to Indian participants."}
+plt_evolution_mean_async <- as.data.frame(lmm_mean_async_emmeans) %>%
+  mutate(frequency = as.numeric(as.character(frequency))) %>%
+  ggplot(aes(x = frequency, y = emmean, color = group)) +
+  geom_hline(
+    yintercept = 0,
+    linetype = "longdash", linewidth = 1.2,
+    color = "grey20", alpha = .8
+  ) +
+  geom_pointrange(
+    aes(ymin = lower.CL, ymax = upper.CL),
+    position = position_dodge(width = 0.2),
+    size = 1, linewidth = 1.2
+  ) +
+  geom_line(
+    aes(group = group),
+    position = position_dodge(width = 0.2),
+    linewidth = 1.2
+  ) +
+  scale_x_continuous(
+    breaks = seq(1.0, 3.7, by = 0.6),
+    minor_breaks = seq(1.0, 3.7, by = 0.3),
+    guide = "axis_minor"
+  ) +
+  scale_color_manual(values = c(FR, IN)) +
+  labs(y = "Mean asynchrony (ms)", x = "Frequency (Hz)") +
+  theme(
+    legend.position = "bottom",
+    ggh4x.axis.ticks.length.minor = rel(0.5)
+  )
+plt_evolution_mean_async
+```
+
+```{r plt-mean-async-comparison, warning=FALSE, fig.asp=0.5,  message=FALSE, fig.scap="Frequency-specific distributions of mean asynchrony", fig.cap="Frequency-specific distributions of mean asynchrony (in milliseconds) for French and Indian groups. Combined boxplots show interquartile range and median, ridgeline plots display probability densities, and jittered points represent individual trial values. Sample sizes (n) are indicated for each frequency-group combination."}
+plt_mean_async_comparison <- df_async_by_task %>%
+  mutate(frequency = sprintf("%.1f Hz", frequency)) %>%
+  group_by(group, frequency) %>%
+  mutate(n = n()) %>%
+  ggplot(aes(x = mean_async, y = group)) +
+  geom_density_ridges(
+    aes(fill = group, color = group),
+    alpha = .5,
+    scale = 0.5,
+    # Add individual points below the distribution
+    jittered_points = TRUE,
+    position = position_raincloud(height = 0.3),
+    point_size = 1,
+    point_alpha = 0.5
+  ) +
+  geom_boxploth(
+    width = 0.2,
+    weight = 10,
+    size = 1,
+    outlier.shape = NA
+  ) +
+  geom_vline(
+    xintercept = 0,
+    color = "grey20",
+    linetype = "dashed",
+    linewidth = 1.2,
+    alpha = .6
+  ) +
+  geom_text(
+    aes(
+      x = 180, y = ifelse(group == "Indian", 2.4, 0.6),
+      label = paste0("n = ", n),
+      color = group
+    ),
+    family = "serif",
+    size = 5
+  ) +
+  facet_wrap(~frequency, nrow = 2) +
+  scale_x_continuous(
+    limits = c(-220, 220),
+    breaks = seq(-200, 200, by = 100),
+    minor_breaks = seq(-150, 150, by = 50),
+    guide = "axis_minor"
+  ) +
+  scale_fill_manual(values = c("French" = FR, "Indian" = IN)) +
+  scale_color_manual(values = c("French" = FR, "Indian" = IN)) +
+  xlab("Mean asynchrony (ms)") +
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    ggh4x.axis.ticks.length.minor = rel(0.75),
+    panel.spacing = unit(0.2, "cm"),
+    legend.position = "bottom"
+  )
+plt_mean_async_comparison
+```
+
+#### Interpretation
+
+-   **Indian participants had greater mean asynchrony compared to French participants** (keeping the sign of the asynchrony; in absolute value the asynchrony of Indian participants was closer to zero) (Figure \@ref(fig:plt-mean-async-comparison), Table \@ref(tab:lmm-mean-async-fixef-coeffs)).
+
+-   **Similar evolution of mean asynchrony with frequency for both groups**: change across plateaus was slow until 2.2 Hz; then mean asynchrony began increasing linearly with frequency plateaus (Figure \@ref(fig:plt-mean-async-evol)).
+
+#### Further analysis of NMA among participants
+
+Our results reveal unexpected patterns concerning Negative Mean Asynchrony (NMA), a phenomenon well-known in SMS in which movements preced stimuli when synchronizing with them [see @aschersleben2002, @repp2005 and @repp2013 for reviews]. This pattern is considered ubiquitous among humans, typically manifesting as taps occuring approximately 50 ms before auditory pacing signals.
+
+Analysis of group-averaged mean asynchrony (averaging the mean asynchrony across trials by group and metronome frequency; Table \@ref(tab:lmm-mean-async-fixef-coeffs) and Figure \@ref(fig:plt-mean-async-evol)) revealed that French group exhibit the NMA between 1.0 and 2.2 Hz, with a group average mean asynchrony around -50 ms. This is not the case for Indian group; participants dispalyed positive average mean asynchrony (+17 ms) at 1.0 Hz, which decreased until reaching -15 ms at 1.9 Hz, then increased back. Across all metronome frequencies, Indian participants' mean asynchrony was substantially greater than classical NMA ranges.
+
+Trial-level analysis (see Figure \@ref(fig:plt-mean-async-comparison)) revealed substantial heterogenity in the French sample, despite French participants group-level averages aligning with classical NMA values. Even in the French sample, some trials exhibited mean asynchrony greater than typical NMA values, with some ocurrences of positive mean asynchrony occuring at all frequencies. For Indian participants, at least half of the trials showed positive mean asynchrony at all metronome frequencies.
+
+These observation raise critical questions concerning the consistency of mean asynchrony patterns within individuals value:
+
+-   *Do participants who exhibit NMA at a given frequency in a trial exhibit NMA across all metronome frequencies?*
+
+    For this analysis, we considered that NMA was when the mean asynchrony was \< -20 ms. As mentioned earlier, NMA is not simply characterized by negative values of mean asynchrony but by values that "precede sequence tones by a few tens of milliseconds" [@repp2005, p. 973]. Both group exhibit different distribution shapes (Figure \@ref(fig:plt-nbplats-nma-trials)). For French group, it resembles a gaussian distribution with a average value around 4 plateaus in NMA. For Indian group, it resembles an exponential distribution, with most trials having less that 3 plateaus with NMA.
+
+```{r plt-nbplats-nma-trials, fig.width=10, fig.asp=0.8, out.width="60%", fig.scap="Distribution of the number of plateaus exhibiting NMA for each trial", fig.cap="Distribution of the number plateaus exhibiting NMA (mean asynchrony < 20 ms) for each trial. There are 9 frequency plateaus between 1.0 and 3.7 Hz, which is the range of frequency where the mean asynchrony was calculated."}
+df_async_by_task %>%
+  mutate(is_NMA = ifelse(mean_async < -20, 1, 0)) %>%
+  group_by(subject, task, task_number, group) %>%
+  summarise(n_plat_NMA = sum(is_NMA), .groups = "drop") %>%
+  ggplot(aes(x = n_plat_NMA, fill = group)) +
+  geom_bar(position = position_dodge()) +
+  scale_fill_manual(values = c(FR, IN)) +
+  scale_x_continuous(breaks = seq(0, 9)) +
+  labs(
+    x = "Number of plateaus with mean asynchrony < -20 ms",
+    y = "Number of trials"
+  )
+```
+
+-   *Do participants who exhibit NMA in one trial consistently maintain this pattern across all trials and frequencies, and conversely, do those showing positive mean asynchrony consistently demonstrate this pattern?*
+
+    We can identify two profiles in the French group (Figure \@ref(fig:plt-dist-meanasync-subj)). First, there are 5 participants who exhibit almost exclusively NMA (centered around -100 ms when considering only values between 1.0 and 2.2 Hz). Second, other participants exhibit both negative and positive mean asynchrony values, but are centered around negative values (ranging from -30 ms to 0 ms).
+
+    For the Indian group, participants all exhibit both positive and negative mean asynchrony values (Figure \@ref(fig:plt-dist-meanasync-subj)). The value around which the distribution is centered is evenly distributed between -50 ms for the participant exhibiting the most negative mean asynchrony, and +50 for the participants exhibiting the most positive mean asynchrony.
+
+```{r plt-dist-meanasync-subj, fig.asp=0.5, fig.scap="Distribution of mean asynchrony values per participant", fig.cap="Distribution of mean asynchrony values per participants. Boxplots display interquartile range and median, with whiskers extending to values within 1.5 IQR. \\textbf{(Left pannel)} All mean asynchrony values are included. \\textbf{(Right pannel)} Only mean asynchrony values from the plateaus who have an initial constant average mean asynchrony values (1.0 Hz to 2.2 Hz)."}
+plt_dist_meanasync_subj <- df_async_by_task %>%
+  group_by(subject, group) %>%
+  mutate(average_async = median(mean_async)) %>%
+  ungroup() %>%
+  distinct(subject, group, average_async) %>%
+  arrange(group, average_async) %>%
+  mutate(subject = factor(subject, levels = subject)) %>%
+  right_join(df_async_by_task, by = c("subject", "group")) %>%
+  ggplot(aes(x = subject, y = mean_async, fill = group)) +
+  geom_boxplot() +
+  geom_hline(aes(yintercept = 0), linetype = "dashed") +
+  scale_y_continuous(
+    limits = c(-150, 150), 
+    breaks = seq(-150, 150, 25)
+  ) +
+  scale_fill_manual(values = c(FR, IN)) +
+  labs(
+    title = "All frequencies",
+    x = "",
+    y = "Mean asynchrony (ms)"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 90),
+    legend.position = "bottom"
+  )
+temp_legend <- ggpubr::get_legend(plt_dist_meanasync_subj)
+
+plt_dist_meanasync_subj_stat <- df_async_by_task %>%
+  filter(frequency < 2.5) %>%
+  group_by(subject, group) %>%
+  mutate(average_async = median(mean_async)) %>%
+  ungroup() %>%
+  distinct(subject, group, average_async) %>%
+  arrange(group, average_async) %>%
+  mutate(subject = factor(subject, levels = subject)) %>%
+  right_join(df_async_by_task, by = c("subject", "group")) %>%
+  filter(frequency < 2.5) %>%
+  ggplot(aes(x = subject, y = mean_async, fill = group)) +
+  geom_boxplot() +
+  geom_hline(aes(yintercept = 0), linetype = "dashed") +
+  scale_y_continuous(
+    limits = c(-150, 150), 
+    breaks = seq(-150, 150, 25)
+  ) +
+  scale_fill_manual(values = c(FR, IN)) +
+  labs(
+    title = "Frequency < 2.5",
+    x = "",
+    y = ""
+  ) +
+  theme(axis.text.x = element_text(angle = 90))
+
+plot_grid(
+  plot_grid(
+    plt_dist_meanasync_subj + theme(legend.position = "none"), 
+    plt_dist_meanasync_subj_stat + theme(legend.position = "none"),
+    nrow = 1
+  ),
+  temp_legend,
+  ncol = 1,
+  rel_heights = c(0.95, 0.05)
+)
+```
+
+\newpage
+
+### SD $\phi_\text{sync}$
+
+As described earlier, the SD $\phi_\text{sync}$ is a measure of stability of synchronization, with lower values indicating a more stable synchronization. As for the mean asynchrony section, we are interested only in synchronized plateaus: that's why we call this section SD $\phi_\text{sync}$, by contrast with the SD $\phi_\text{all}$ section that considered all the plateaus.
+
+```{r plt-sd-relphase-sync, echo=FALSE, warning=FALSE, fig.asp=0.6, fig.scap="Distribution of SD $\\phi_\\text{sync}$ across metronome frequencies", fig.cap="Distribution of standard deviation of relative phase for synchronized plateaus (SD $\\phi_\\text{sync}$; in radians) across metronome frequencies for French and Indian groups. Boxplots display interquartile range and median, with whiskers extending to values within 1.5 IQR. Both groups maintain low variability throughout the frequency range analyzed."}
+plt_sd_relphase_sync <- df_async_by_task %>%
+  mutate(frequency = sprintf("%.1f", frequency)) %>%
+  ggplot(aes(x = factor(frequency), y = sd_relphase, fill = group)) +
+  geom_point(
+    aes(color = group),
+    position = position_jitterdodge(),
+    alpha = 0.5, size = 2
+  ) +
+  geom_boxplot(outliers = FALSE, linewidth = .7) +
+  scale_y_continuous(limits = c(0, 1)) +
+  scale_fill_manual(values = c("transparent", "transparent")) +
+  scale_color_manual(values = c("French" = FR, "Indian" = IN)) +
+  labs(y = expression(SD ~ phi ~ (radians)), x = "Frequency (Hz)") +
+  theme(legend.position = "bottom")
+plt_sd_relphase_sync
+```
+
+#### Linear mixed model structure
+
+We aimed analyzing the evolution of the SD $\phi$ with frequency for each group and the evolution with frequency of the difference of SD $\phi$ between groups. To determine the best model to do so, we sought the optimal fixed effects and random effects structure. The fixed effects would constitute the main effects and interaction between frequency and group, but we had to choose whether frequency should be included as a continuous (`CONT`) or as a categorical variable (`CAT`). For the random effects, we examined whether we should include only random intercept (allowing SD $\phi$ to vary between participants at 1 Hz; `RI`) or whether we should also include a random slope (allow the evolution of SD $\phi$ with frequency to vary between participants; `RIRS`).
+
+```{r lmm-sd-phi-models}
+list_sd_phi_freq_mis <- list(
+  CONT_RI = lmer(
+    sd_relphase ~ frequency * group + (1 | subject),
+    data = df_async_by_task
+  ),
+  CONT_RIRS = lmer(
+    sd_relphase ~ frequency * group + (frequency | subject),
+    data = df_async_by_task
+  ),
+  CAT_RI = lmer(
+    sd_relphase ~ frequency * group + (1 | subject),
+    data = df_async_by_task %>%
+      mutate(frequency = as.factor(frequency))
+  ),
+  CAT_RIN = lmer(
+    sd_relphase ~ frequency * group + (1 | subject:frequency),
+    data = df_async_by_task %>%
+      mutate(frequency = as.factor(frequency))
+  )
+)
+
+kable(
+  format_model_comparison(
+    compare_performance(
+      list_sd_phi_freq_mis$CONT_RI,
+      list_sd_phi_freq_mis$CONT_RIRS,
+      list_sd_phi_freq_mis$CAT_RI,
+      list_sd_phi_freq_mis$CAT_RIN,
+      verbose = FALSE
+    )
+  ) %>%
+    mutate(Model = c("CONT RI", "CONT RIRS", "CAT RI", "CAT RIN")),
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Model comparison for SD $\\phi$ analysis",
+  caption = "Model comparison for SD $\\phi$. The table shows the AIC, AICc, and BIC values with their weights, as well as the marginal and conditional $R^2$ values, the intraclass correlation coefficient (ICC), the root mean square error (RMSE), and the residual standard deviation ($\\sigma_r$) for each model."
+) %>%
+  kable_styling(latex_options = c("hold_position", "scale_down"))
+```
+
+The model including frequency as a continuous variable with random intercept and slope outperformed the other models. The choice of including frequency as a continuous variable is further justified by the linear evolution of SD $\phi$ with frequency observed in Figure \@ref(fig:plt-sd-relphase-sync). Therefore, we analyzed the variation of frequency mismatch across groups and frequencies with the following linear mixed model: $$\text{SD} \phi_\text{sync} \sim \text{group} \times \text{frequency} + (\text{frequency} \mid \text{subject}), \tag{9}$$where $(\text{frequency}\mid\text{subject})$ means that we allow the intercept and the slope to vary for each participant.
+
+For the sake of interpretability, we subtracted 1 from the frequency so that the baseline value is set at 1.0 Hz.
+
+```{r}
+df_async_by_task_lm <- df_async_by_task
+df_async_by_task_lm$frequency <- df_async_by_task_lm$frequency - 1
+
+lmm_sd_relphase <- lmer(
+  sd_relphase ~ group * frequency + (frequency | subject),
+  data = df_async_by_task_lm %>%
+    mutate(group = ifelse(group == "French", 0, 1))
+)
+```
+
+#### Assumptions checking
+
+```{r lmm-sd-relphase-assumptions, fig.asp=0.9, out.width="80%", fig.scap="Diagnostic plots for SD $\\phi_\\text{sync}$ analysis", fig.cap="Diagnostic plots assessing linear mixed model assumptions for standard deviation of relative phase for synchronized plateaus (SD $\\phi_\\text{sync}$) analysis. \\textbf{(A)} Residuals versus fitted values; \\textbf{(B)} normal Q-Q plot for residuals; \\textbf{(C)} histogram of residuals; \\textbf{(D)} individual (across participants and metronome frequency) random effect coefficients for intercept by group; \\textbf{(E)} normal Q-Q plot for random intercepts; \\textbf{(F)} histogram of random intercepts; \\textbf{(G)} individual random effect coefficients for slope by group; \\textbf{(H)} normal Q-Q plot for random slopes; \\textbf{(I)} histogram of random slopes. All assumptions were satisfactorily met."}
+lm_assumptions_check(lmm_sd_relphase)
+```
+
+The diagnostic plots (Figure \@ref(fig:lmm-sd-relphase-assumptions)) indicate that all model assumptions were satisfactorily met; although results from inferential testing should be interpreted with some awareness since deviations from normality of the residuals were observed in the Q-Q plot and the distribution of the residuals is skewed.
+
+#### Results
+
+The effect of group, frequency and their interaction on SD $\phi_\text{sync}$ is presented in Table \@ref(tab:lmm-sd-phi-coeffs). Information regarding the model fit can be found in Table \@ref(tab:lmm-sd-phi-ranef).
+
+```{r lmm-sd-phi-coeffs}
+kable(
+  format_fixed_coefficients(lmm_sd_relphase, n_digits = 3),
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Effect of group, frequency and their interaction on SD $\\phi_\\text{sync}$",
+  caption = "Effect of group, frequency and their interaction on SD $\\phi_\\text{sync}$. Coefficients represent baseline values (Intercept, for French participants) and changes associated with group (Indian compared to French), stimulus frequency and their interaction, with corresponding standard error, degrees of freedom, $t$-value and $p$-value."
+) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+```{r lmm-sd-phi-ranef}
+lmm_sd_relphase_icc <- data.frame(
+  do.call(
+    cbind,
+    lapply(c(1:2), function(x) {
+      random_effects <- as.data.frame(VarCorr(lmm_sd_relphase))
+      random_effect <- random_effects[-3, ]
+      n_effects <- length(random_effects$vcov)
+      icc <- random_effects$vcov[x] / sum(random_effects$vcov)
+      name <- random_effects$var1[x]
+      data.frame(ICC = sprintf("%0.2f", icc)) %>%
+        setNames(c(sprintf("%s ICC", name)))
+    })
+  )
+) %>%
+  setNames(c("Intercept", "Slope"))
+
+lmm_sd_relphase_ranef <- as.data.frame(VarCorr(lmm_sd_relphase)) %>%
+  mutate(
+    Component = case_when(
+      var1 == "(Intercept)" & is.na(var2) & grp != "Residual" ~
+        "Random Effects: Intercept",
+      var1 == "frequency" & is.na(var2) ~ "Random Effects: Slope",
+      !is.na(var2) ~ "Random Effects: Correlation",
+      grp == "Residual" ~ "Residual"
+    ),
+    Variance = case_when(
+      Component == "Random Effects: Correlation" ~ "",
+      TRUE ~ sprintf("%0.4f", vcov)
+    ),
+    SD = sprintf("%0.2f", sdcor)
+  ) %>%
+  filter(!is.na(Component)) %>%
+  mutate(
+    ICC = c(
+      lmm_sd_relphase_icc$Intercept,
+      lmm_sd_relphase_icc$Slope,
+      "",
+      ""
+    ),
+    mR2 = "",
+    cR2 = ""
+  ) %>%
+  select(Component, Variance, SD, ICC, mR2, cR2) %>%
+  bind_rows(
+    data.frame(
+      Component = "Model Fit",
+      Variance = "",
+      SD = "",
+      ICC = "",
+      mR2 = sprintf("%0.2f", r.squaredGLMM(lmm_sd_relphase)[1]),
+      cR2 = sprintf("%0.2f", r.squaredGLMM(lmm_sd_relphase)[2])
+    )
+  ) %>%
+  setNames(c("Component", "Variance", "SD/Correlation", "ICC", "$R^2$ (marg.)", "$R^2$ (cond.)"))
+
+kable(
+  lmm_sd_relphase_ranef,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Random effects and model fit for the SD $\\phi_\\text{sync}$ linear mixed model",
+  caption = "Random effects and model fit statistics for the SD $\\phi_\\text{sync}$ linear mixed model. Components include random intercept and slope variances with their correlation, residual variance, intraclass correlations, and explanatory power metrics."
+) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+#### Interpretation
+
+-   **SD** $\phi_\text{sync}$ **increased linearly with frequency**
+
+-   **Both groups exhibited the same evolution**
+
+\newpage
+
+# Relationship between variables
+
+## Coupling strength
+
+From the Arnold tongue perspective, the synchronization dynamics can be fully described by the detuning (not to be confused with frequency mismatch) between the participant's preferred frequency and the coupling strength between the participant and the forcing sequence [@pikovsky2001]. The coupling strength should impact both the limit rate of synchronization and its stability. In fact, an increase in coupling strength should imply a decrease in the dispersion of relative phase values and an increase in both the maximum synchronized frequency (MSF) and the synchronized frequency count (SFC). Therefore, these three variables should be correlated.
+
+Pairwise linear mixed models were fitted between the smallest SD $\phi$ value, the MSF and the SFC. The smallest SD $\phi$ value was identified by singling out, for each trial, the frequency plateau where SD $\phi_\text{sync}$ was minimal; this specific SD $\phi_\text{sync}$ value is what we call the mininum SD $\phi$ and is supposed to be correlated with the coupling strength between the participant and the metronome. For each variable, one value single was kept for each trial of the *sync* task (since MSF and SFC were identified only on these tasks and not on *syncslow*; see Section [Rate limit of synchronization]).
+
+```{r}
+df_coupling_strength <- merge(
+  # Compute the smallest SD phi for each trial
+  df_async_by_task %>%
+    filter(task == "sync") %>%
+    group_by(group, subject, task_number) %>%
+    arrange(sd_relphase) %>% # Sort in increasing order
+    slice(1), #  Keep 1st row for each combination of grouping
+
+  # MSF and SFC were already computed in this df
+  df_rate_limit
+)
+```
+
+### MSF vs. SFC
+
+The comparison between French and Indian's MSF and SFC revealed an interesting pattern (see [Rate limit of synchronization]). Although French and Indian participants achieved synchronization at a similar number of frequencies during the, French participants were able to synchronize at higher frequency compared to Indian participants. We suspect that French participants lost synchronization for several plateaus before regaining it, a pattern not observed among Indian participants (see [Frequency mismatch \$\\Delta\\omega\$]).
+
+Building on these observations, we performed a regression analysis between the two variables related to the rate limit of synchronization; MSF and SFC. Given the distinct patterns observed between French and Indian participants, we suspected that the relationship might differ for each group.
+
+#### Linear mixed models structure
+
+A linear mixed model was fitted for each group between the MSF and the SFC (after subtracting 10), with varying intercept for each participant. We subtracted 10 from the SFC to enhance interpretability: the models intercept was the MSF when the SFC is 10, which was approximately the average number of synchronized frequency for both groups. If participants were synchronized for the 10 first plateaus before losing synchronization, it means they were synchronized until 3.7 Hz. Importantly, *this transformation does not affect the slope*.
+
+The two fitted models were defined as:$$\text{MSF} \sim (\text{SFC} - \overline{\text{SFC}}) + (1 \mid \text{subject}), \tag{10}$$where $\overline{\text{SFC}}$ is the average number of synchronized frequencies, equal to 10 for both groups (see Table \@ref(tab:lmm-sfc-fixef)).
+
+```{r}
+df_rate_limit_lm <- df_rate_limit %>%
+  mutate(SFC = SFC - 10)
+
+list_lmm_rate_limits <- list(
+  French = lmer(
+    MSF ~ SFC + (1 | subject),
+    data = subset(df_rate_limit_lm, group == "French")
+  ),
+  Indian = lmer(
+    MSF ~ SFC + (1 | subject),
+    data = subset(df_rate_limit_lm, group == "Indian")
+  )
+)
+```
+
+#### Assumptions checking
+
+```{r lmm-rl-fr-assumptions, fig.asp=0.6, out.width="80%", fig.scap="Diagnostic plots for the relationship between MSF and SFC for the French group", fig.cap="Diagnostic plots assessing linear mixed model assumptions for the relationship between Maximum Synchronized Frequency (MSF; in Hz) and Synchronized Frequency Count (SFC; in Hz) for the French group. \\textbf{(A)} Residuals versus fitted values; \\textbf{(B)} normal Q-Q plot for residuals; \\textbf{(C)} histogram of residuals; \\textbf{(D)} individual random effect coefficients for intercept by group; \\textbf{(E)} normal Q-Q plot for random effects; \\textbf{(F)} histogram of random effects. All assumptions were satisfactorily met."}
+lm_assumptions_check(list_lmm_rate_limits$French, n_breaks = c(10, 5))
+```
+
+```{r lmm-rl-in-assumptions, fig.asp=0.6, out.width="80%", fig.scap="Diagnostic plots for the relationship between MSF and SFC for the Indian group", fig.cap="Diagnostic plots assessing linear mixed model assumptions for the relationship between Maximum Synchronized Frequency (MSF; in Hz) and Synchronized Frequency Count (SFC; in Hz) for the Indian group. \\textbf{(A)} Residuals versus fitted values; \\textbf{(B)} normal Q-Q plot for residuals; \\textbf{(C)} histogram of residuals; \\textbf{(D)} individual random effect coefficients for intercept by group; \\textbf{(E)} normal Q-Q plot for random effects; \\textbf{(F)} histogram of random effects. All assumptions were satisfactorily met."}
+lm_assumptions_check(list_lmm_rate_limits$Indian, n_breaks = c(10, 5))
+```
+
+The diagnostic plots (Figures \@ref(fig:lmm-rl-fr-assumptions) and \@ref(fig:lmm-rl-in-assumptions)) indicate that all model assumptions were satisfactorily met for both groups.
+
+#### Results
+
+The coefficients from the regressions are shown in Table \@ref(tab:lmm-rl-estimates) and displayed on Figure \@ref(fig:plt-rl). Information regarding the model fit can be found in Table \@ref(tab:lmm-rl-ranef).
+
+```{r lmm-rl-estimates}
+lmm_rate_limits_coeff <- rbind(
+  format_fixed_coefficients(list_lmm_rate_limits$French),
+  format_fixed_coefficients(list_lmm_rate_limits$Indian)
+) %>%
+  rownames_to_column(" ") %>%
+  mutate(` ` = c("Intercept", "SFC", "Intercept", "SFC"))
+
+kable(
+  lmm_rate_limits_coeff,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Fixed effects estimates for the relationship between SFC and MSF",
+  caption = "Fixed effects estimates for the relationship between Synchronized Frequency Count (SFC; in Hz) and Maximum Synchronized Frequency (MSF; in Hz) for French and Indian groups. Intercepts represents the MSF when the SFC is 10. SFC represents the change in the MSF for each additional frequency a participant can synchronize with. Coefficients shown with standard error, degrees of freedom, $t$-value and $p$-value."
+) %>%
+  pack_rows(index = c("French" = 2, "Indian" = 2)) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+```{r lmm-rl-ranef}
+lmm_rate_limits_ranef <- do.call(
+  rbind,
+  lapply(
+    list(list_lmm_rate_limits$French, list_lmm_rate_limits$Indian),
+    create_df_ranef_intercept
+  )
+)
+
+kable(
+  lmm_rate_limits_ranef,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Random effects and model fit for the relationship between SFC and MSF",
+  caption = "Random effects and model fit statistics for the relationship between Synchronized Frequency Count (SFC; in Hz) and Maximum Synchronized Frequency (MSF; in Hz) for French and Indian groups Displaying variance and standard deviation components, intraclass correlation for random effect and explanatory power metrics."
+) %>%
+  pack_rows(index = c("French" = 3, "Indian" = 3)) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+```{r plt-rl, fig.asp=0.6, fig.scap="Representation of the relationship between MSF and SFC", fig.cap="Representation of the relationship between the Maximum Synchronized Frequency (MSF; in Hz) and the Synchronized Frequency Count (SFC; in Hz) for French and Indian groups. The black line and the shaded area represent the estimates and standard errors computed by the linear mixed models fitted for each group. The dotted grey line represents the expected relationship, \\textit{i.e.}, an increase of 0.3 Hz for the higest synchronized frequency for each additional synchronized frequency. One point represents one trial of one participant."}
+# Create a dataframe with the regression and its associated SE
+# estimated from each linear mixed model
+lmm_rate_limits_plot_df <- do.call(
+  rbind,
+  lapply(c("French", "Indian"), function(the_group) {
+    # Extract intercept and slope from each model
+    n_model <- ifelse(the_group == "French", 1, 2)
+    coefs <- summary(list_lmm_rate_limits[[n_model]])$coefficients
+
+    # Compute the predicted values and 95% CI
+    range_values <- c(
+      min(df_rate_limit[df_rate_limit$group == the_group, "SFC"]) - 10,
+      max(df_rate_limit[df_rate_limit$group == the_group, "SFC"]) - 10
+    )
+    predicted_values <- calculate_se_regression(
+      coefs[1, "Estimate"], coefs[1, "Std. Error"],
+      coefs[2, "Estimate"], coefs[2, "Std. Error"],
+      range_values
+    )
+    # 10 was subtracted to the SFC to fit the model, we add it back
+    predicted_values$x <- predicted_values$x + 10
+    predicted_values$group <- the_group
+
+    return(predicted_values)
+  })
+)
+
+df_rate_limit %>%
+  ggplot(aes(x = SFC, y = MSF)) +
+  geom_abline(
+    intercept = 0.7, slope = 0.3,
+    linetype = "dashed",
+    alpha = 0.5, size = 1.2
+  ) +
+  geom_point(aes(color = group), size = 3) +
+  geom_ribbon(
+    data = lmm_rate_limits_plot_df,
+    aes(x = x, ymin = lower, ymax = upper),
+    inherit.aes = FALSE,
+    alpha = 0.2
+  ) +
+  geom_line(
+    data = lmm_rate_limits_plot_df,
+    aes(x = x, y = pred),
+    linewidth = 1.5
+  ) +
+  facet_grid(~group) +
+  scale_color_manual(values = c(FR, IN)) +
+  labs(
+    x = "SFC",
+    y = "MSF (Hz)"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+#### Interpretation
+
+-   There was a relationship between MSF and SFC for both groups, MSF increased as SFC increased too (Table \@ref(tab:lmm-rl-estimates))
+
+-   Indian group's relationship was closer to expectation than that of French group, with a slope of 0.21 (expected slope = 0.3) for Indian participants and 0.08 for French participants (Table \@ref(tab:lmm-rl-estimates)). This supports the observation that MSF and SFC were better correlated for Indian participants (Table \@ref(tab:lmm-rl-ranef)), and therefore that French participants lost synchronization for several plateaus before synchronizing again for one plateau only.
+
+\newpage
+
+### SD $\phi$ vs. MSF
+
+#### Linear mixed models structure
+
+We want to explore the relationship between the minimum SD $\phi$ for each trial and the maximum synchronized frequency. We fitted a linear mixed model for each group, with random intercept for each participant, defined as:$$ \text{min SD } \phi \sim \text{MSF} + (1 \mid \text{subject}). \tag{11}$$
+
+As described above, we predicted a negative relationship: as min SD $\phi$ increased, the stability of synchronization decreased and hence participants should lose synchronization at lower frequencies.
+
+```{r}
+list_lmm_sd_phi_msf <- list(
+  French = lmer(
+    sd_relphase ~ MSF + (1 | subject),
+    data = subset(df_coupling_strength, group == "French")
+  ),
+  Indian = lmer(
+    sd_relphase ~ MSF + (1 | subject),
+    data = subset(df_coupling_strength, group == "Indian")
+  )
+)
+```
+
+#### Assumptions checking
+
+```{r lmm-sd-phi-msf-fr-assumptions, fig.asp=0.6, out.width="80%", fig.scap="Diagnostic plots for the relationship between min SD $\\phi$ and MSF for the French group", fig.cap="Diagnostic plots assessing linear mixed model assumptions for the relationship between min SD $\\phi$ (in rad) and Maximum Synchronized Frequency (MSF; in Hz) for the French group. \\textbf{(A)} Residuals versus fitted values; \\textbf{(B)} normal Q-Q plot for residuals; \\textbf{(C)} histogram of residuals; \\textbf{(D)} individual random effect coefficients for intercept by group; \\textbf{(E)} normal Q-Q plot for random effects; \\textbf{(F)} histogram of random effects. All assumptions were satisfactorily met."}
+lm_assumptions_check(list_lmm_sd_phi_msf$French, n_breaks = c(8, 4))
+```
+
+```{r lmm-sd-phi-msf-in-assumptions, fig.asp=0.6, out.width="80%", fig.scap="Diagnostic plots for the relationship between min SD $\\phi$ and MSF for the Indian group", fig.cap="Diagnostic plots assessing linear mixed model assumptions for the relationship between min SD $\\phi$ (in rad) and Maximum Synchronized Frequency (MSF; in Hz) for the Indian group. \\textbf{(A)} Residuals versus fitted values; \\textbf{(B)} normal Q-Q plot for residuals; \\textbf{(C)} histogram of residuals; \\textbf{(D)} individual random effect coefficients for intercept by group; \\textbf{(E)} normal Q-Q plot for random effects; \\textbf{(F)} histogram of random effects. All assumptions were satisfactorily met."}
+lm_assumptions_check(list_lmm_sd_phi_msf$Indian, n_breaks = c(10, 4))
+```
+
+The diagnostic plots (Figures \@ref(fig:lmm-sd-phi-msf-fr-assumptions) and \@ref(fig:lmm-sd-phi-msf-in-assumptions)) indicate that all model assumptions were satisfactorily met for both groups.
+
+#### Results
+
+The coefficients from the regressions are shown in Table \@ref(tab:lmm-sd-phi-msf-estimates) and displayed on Figure \@ref(fig:plt-sd-phi-msf). Information regarding the model fit can be found in Table \@ref(tab:lmm-sd-phi-msf-ranef).
+
+```{r lmm-sd-phi-msf-estimates}
+lmm_sd_phi_msf_coeff <- rbind(
+  format_fixed_coefficients(list_lmm_sd_phi_msf$French),
+  format_fixed_coefficients(list_lmm_sd_phi_msf$Indian)
+) %>%
+  rownames_to_column(" ") %>%
+  mutate(` ` = c("Intercept", "MSF", "Intercept", "MSF"))
+
+kable(
+  lmm_sd_phi_msf_coeff,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Fixed effects estimates for the relationship between min SD $\\phi$ and MSF",
+  caption = "Fixed effects estimates for the relationship between SD $\\phi$ (in rad) and Maximum Synchronized Frequency (MSF; in Hz) for French and Indian participants. Intercepts represents the min SD $\\phi$ value (in radians) when MSF is 0. MSF represents the change in the min SD $\\phi$ when the MSF increased by 1.0 Hz. Coefficients shown with standard error, degrees of freedom, $t$-value and $p$-value."
+) %>%
+  pack_rows(index = c("French" = 2, "Indian" = 2)) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+```{r lmm-sd-phi-msf-ranef}
+lmm_sd_phi_msf_ranef <- do.call(
+  rbind,
+  lapply(
+    list(list_lmm_sd_phi_msf$French, list_lmm_sd_phi_msf$Indian),
+    function(model) {
+      create_df_ranef_intercept(model, n_decimals = c(4, 2))
+    }
+  )
+)
+
+kable(
+  lmm_sd_phi_msf_ranef,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Random effects and model fit for the relationship between min SD $\\phi$ and MSF",
+  caption = "Random effects and model fit statistics for the relationship between SD $\\phi$ (in rad) and Maximum Synchronized Frequency (MSF; in Hz) for French and Indian participants. Displaying variance and standard deviation components, intraclass correlation for random effect and explanatory power metrics."
+) %>%
+  pack_rows(index = c("French" = 3, "Indian" = 3)) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+```{r plt-sd-phi-msf, fig.asp=0.6, fig.scap="Representation of the relationship between min SD $\\phi$ and MSF", fig.cap="Representation of the relationship between min SD $\\phi$ (in rad) and the Maximum Synchronized Frequency (MSF; in Hz). The black line and the shaded area represent the estimates and standard errors computed by the linear mixed models fitted for each group. One point represents one trial of one participant."}
+# Create a dataframe with the regression and its associated SE
+# estimated from each linear mixed model
+lmm_sd_phi_msf_plot_df <- do.call(
+  rbind,
+  lapply(c("French", "Indian"), function(the_group) {
+    # Extract intercept and slope from each model
+    n_model <- ifelse(the_group == "French", 1, 2)
+    coefs <- summary(list_lmm_sd_phi_msf[[n_model]])$coefficients
+
+    # Compute the predicted values and 95% CI
+    range_values <- c(
+      min(df_rate_limit[df_coupling_strength$group == the_group, "MSF"]),
+      max(df_rate_limit[df_coupling_strength$group == the_group, "MSF"])
+    )
+    predicted_values <- calculate_se_regression(
+      coefs[1, "Estimate"], coefs[1, "Std. Error"],
+      coefs[2, "Estimate"], coefs[2, "Std. Error"],
+      range_values
+    )
+    predicted_values$group <- the_group
+
+    return(predicted_values)
+  })
+)
+
+df_coupling_strength %>%
+  ggplot(aes(x = MSF, y = sd_relphase)) +
+  geom_point(aes(color = group), size = 3) +
+  geom_ribbon(
+    data = lmm_sd_phi_msf_plot_df,
+    aes(x = x, ymin = lower, ymax = upper),
+    inherit.aes = FALSE,
+    alpha = 0.2
+  ) +
+  geom_line(
+    data = lmm_sd_phi_msf_plot_df,
+    aes(x = x, y = pred),
+    linewidth = 1.5
+  ) +
+  facet_grid(~group) +
+  scale_color_manual(values = c(FR, IN)) +
+  labs(
+    x = "MSF (Hz)",
+    y = expression(SD ~ phi ~ (rad))
+  ) +
+  theme(legend.position = "bottom")
+```
+
+#### Interpretation
+
+-   No relationship for French participants
+
+-   Indian participants exhibited the expected relationship, a greater stability of synchronization was associated with a higher MSF
+
+### SD $\phi$ vs. SFC
+
+#### Linear mixed models structure
+
+We want to explore the relationship between the minimum SD $\phi$ for each trial and the synchronized frequency count. We fit a linear mixed model for each group, with random intercept for each participant, defined as:$$\text{min SD } \phi \sim \text{SFC} + (1 \mid \text{subject}). \tag{12}$$
+
+As describe above, we predict that the relationship is negative: as min SD $\phi$ increased, the stability of synchronization decreased and hence participants should be synchronized for fewer plateaus.
+
+```{r}
+list_lmm_sd_phi_sfc <- list(
+  French = lmer(
+    sd_relphase ~ SFC + (1 | subject),
+    data = subset(df_coupling_strength, group == "French")
+  ),
+  Indian = lmer(
+    sd_relphase ~ SFC + (1 | subject),
+    data = subset(df_coupling_strength, group == "Indian")
+  )
+)
+```
+
+#### Assumptions checking
+
+```{r lmm-sd-phi-sfc-fr-assumptions, fig.asp=0.6, out.width="80%", fig.scap="Diagnostic plots for the relationship between min SD $\\phi$ and SFC for the French group", fig.cap="Diagnostic plots assessing linear mixed model assumptions for the relationship between min SD $\\phi$ (in rad) and Synchronized Frequency Count (SFC; in Hz) for the French group. \\textbf{(A)} Residuals versus fitted values; \\textbf{(B)} normal Q-Q plot for residuals; \\textbf{(C)} histogram of residuals; \\textbf{(D)} individual random effect coefficients for intercept by group; \\textbf{(E)} normal Q-Q plot for random effects; \\textbf{(F)} histogram of random effects. All assumptions were satisfactorily met."}
+lm_assumptions_check(list_lmm_sd_phi_sfc$French, n_breaks = c(8, 6))
+```
+
+```{r lmm-sd-phi-sfc-in-assumptions, fig.asp=0.6, out.width="80%", fig.asp=0.6, fig.scap="Diagnostic plots for the relationship between min SD $\\phi$ and SFC for the Indian group", fig.cap="Diagnostic plots assessing linear mixed model assumptions for the relationship between min SD $\\phi$ (in rad) and Synchronized Frequency Count (SFC; in Hz) for the Indian group. \\textbf{(A)} Residuals versus fitted values; \\textbf{(B)} normal Q-Q plot for residuals; \\textbf{(C)} histogram of residuals; \\textbf{(D)} individual random effect coefficients for intercept by group; \\textbf{(E)} normal Q-Q plot for random effects; \\textbf{(F)} histogram of random effects. All assumptions were satisfactorily met."}
+lm_assumptions_check(list_lmm_sd_phi_sfc$Indian, n_breaks = c(10, 8))
+```
+
+The diagnostic plots (Figures \@ref(fig:lmm-sd-phi-sfc-fr-assumptions) and \@ref(fig:lmm-sd-phi-sfc-in-assumptions)) indicate that all model assumptions were satisfactorily met for both groups.
+
+#Results
+
+The coefficients from the regressions are shown in Table \@ref(tab:lmm-sd-phi-sfc-estimates) and displayed on Figure \@ref(fig:plt-sd-phi-sfc). Information regarding the model fit can be found in Table \@ref(tab:lmm-sd-phi-sfc-ranef).
+
+```{r lmm-sd-phi-sfc-estimates}
+lmm_sd_phi_sfc_coeff <- rbind(
+  format_fixed_coefficients(list_lmm_sd_phi_sfc$French, n_digits = 3),
+  format_fixed_coefficients(list_lmm_sd_phi_sfc$Indian, n_digits = 3)
+) %>%
+  rownames_to_column(" ") %>%
+  mutate(` ` = c("Intercept", "SFC", "Intercept", "SFC"))
+
+kable(
+  lmm_sd_phi_sfc_coeff,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Fixed effects estimates for the relationship between min SD $\\phi$ and SFC",
+  caption = "Fixed effects estimates for the relationship between min SD $\\phi$ (in rad) and Synchronized Frequency Count (SFC; in Hz) for French and Indian participants. Intercepts represents the min SD $\\phi$ value when SFC is 0. MSF represents the change in the min SD $\\phi$ when the SFC increased by 1. Coefficients shown with standard error, degrees of freedom, $t$-value and $p$-value."
+) %>%
+  pack_rows(index = c("French" = 2, "Indian" = 2)) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+```{r lmm-sdphi-sfc-ranef}
+lmm_sd_phi_sfc_ranef <- do.call(
+  rbind,
+  lapply(
+    list(list_lmm_sd_phi_sfc$French, list_lmm_sd_phi_sfc$Indian),
+    function(model) {
+      create_df_ranef_intercept(model, n_decimals = c(4, 2))
+    }
+  )
+)
+
+kable(
+  lmm_sd_phi_sfc_ranef,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Random effects and model fit the relationship between min SD $\\phi$ and SFC",
+  caption = "Random effects and model fit statistics for the relationship between min SD $\\phi$ (in rad) and Synchronized Frequency Count (SFC; in Hz) for French and Indian participants. Displaying variance and standard deviation components, intraclass correlation for random effect and explanatory power metrics."
+) %>%
+  pack_rows(index = c("French" = 3, "Indian" = 3)) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+```{r plt-sd-phi-sfc, fig.asp=0.6, fig.scap="Representation of the relationship between min SD $\\phi$ and SFC", fig.cap="Representation of the relationship between min SD $\\phi$ (in rad) and the Synchronized Frequency Count (SFC; in Hz). The black line and the shaded area represent the estimates and standard errors computed by the linear mixed models fitted for each group. One point represents one trial of one participant."}
+# Create a dataframe with the regression and its associated SE
+# estimated from each linear mixed model
+lmm_sd_phi_sfc_plot_df <- do.call(
+  rbind,
+  lapply(c("French", "Indian"), function(the_group) {
+    # Extract intercept and slope from each model
+    n_model <- ifelse(the_group == "French", 1, 2)
+    coefs <- summary(list_lmm_sd_phi_sfc[[n_model]])$coefficients
+
+    # Compute the predicted values and 95% CI
+    range_values <- c(
+      min(df_rate_limit[df_coupling_strength$group == the_group, "SFC"]),
+      max(df_rate_limit[df_coupling_strength$group == the_group, "SFC"])
+    )
+    predicted_values <- calculate_se_regression(
+      coefs[1, "Estimate"], coefs[1, "Std. Error"],
+      coefs[2, "Estimate"], coefs[2, "Std. Error"],
+      range_values
+    )
+    predicted_values$group <- the_group
+
+    return(predicted_values)
+  })
+)
+
+df_coupling_strength %>%
+  ggplot(aes(x = SFC, y = sd_relphase)) +
+  geom_ribbon(
+    data = lmm_sd_phi_sfc_plot_df,
+    aes(x = x, ymin = lower, ymax = upper),
+    inherit.aes = FALSE,
+    alpha = 0.2
+  ) +
+  geom_line(
+    data = lmm_sd_phi_sfc_plot_df,
+    aes(x = x, y = pred),
+    linewidth = 1.5
+  ) +
+  geom_point(aes(color = group), size = 3) +
+  facet_grid(~group) +
+  scale_color_manual(values = c(FR, IN)) +
+  labs(
+    x = "SFC",
+    y = expression(SD ~ phi ~ (rad))
+  ) +
+  theme(legend.position = "bottom")
+```
+
+#### Interpretation
+
+-   **No relationship for French participants**
+
+-   **Indian participants exhibited the expected relationship**, a greater stability of synchronization was associated with a higher MSF
+
+\newpage
+
+## Mean asynchrony and frequency mismatch
+
+We examined the relationship between mean asynchrony and **frequency mismatch**. Frequency mismatch represents the difference between the movement frequency and the metronome frequency, with positive frequency mismatch indicating a higher movement frequency compared to metronome frequency.
+
+We observed a global tendency for participants to exhibit a positive frequency mismatch, particularly French participants who also exhibited a more negative mean asynchrony compared to Indian participants (see [Frequency mismatch \$\\Delta\\omega\$]). This might be a marker of a tendency for participants to tap faster than the sequency with which they synchronization. This tendency could be due to an over-estimation of the frequency of the metronome [@wohlschläger2000], or to dynamical adaptation of the frequency [*e.g.*, @ermentrout1991; @righetti2006]. In both cases, at low frequencies synchronization may still occur due to sufficient coupling strength, and the positive $\Delta\omega$ is only observed at higher frequencies, where synchronization fails. In such cases, we expected to observe negative mean asynchrony in the synchronization, since if two oscillators with different frequencies are synchronized, the one with the faster intrinsic frequency will be leading the slower [@pikovsky2001].
+
+#### Calculation of the max $\Delta\omega$
+
+For that, we will analyse the relationship between the mean asynchrony and the maximum frequency mismatch (max $\Delta\omega$). To avoid taking using outliers (extreme values of frequency mismatch), we did not directly took the highest value of $\Delta\omega$ for the max $\Delta\omega$. Instead, for each trial of the *sync* tasks:
+
+1.  The plateau with the highest frequency of movement was identified, and a 95% CI of the frequency of movement for this plateau was computed.
+2.  Since some participants managed to synchronize until 6.1 Hz (last plateau), we had to treat differently trials where participants could synchronize until last plateau and trials where participants could not (see Figure \@ref(fig:plt-criteria-max-freqmis).
+    -   *If max 95% CI \> 6.1 Hz*: all plateaus were considered for the next step of analysis, since participant was able to tap at the highest frequency of the metronome
+    -   *If max 95% CI \< 6.1 Hz:* the participant was not able to move at the maximum rate imposed by the metronome, and his maximum movement frequency limited his synchronization capabilities at high frequencies. Therefore, plateaus where the movement frequency was not not included in the 95% CI of the maximum of frequency and plateaus after the maximum movement frequency was reached were discarded for the next step of analysis.
+3.  The $\Delta\omega$ was calculated for the plateaus kept as per criteria 2, and the 20th and 80th percentile of these values were computed. The max $\Delta\omega$ was the percentile with the highest absolute value: $$\max \Delta\omega = \begin{cases}\text{20}^\text{th}\text{ percentile}, &  \vert\text{20}^\text{th}\text{ percentile}\vert > \vert\text{80}^\text{th}\text{ percentile}\vert, \\ \text{80}^\text{th}\text{ percentile}, &  \vert\text{80}^\text{th}\text{ percentile}\vert > \vert\text{20}^\text{th}\text{ percentile}\vert. \end{cases}\tag{13}$$
+
+```{r plt-criteria-max-freqmis, fig.asp = 0.5, fig.scap="Illustration of the criteria for maximum $\\Delta\\omega$ computation", fig.cap="Illustration of the criteria for maximum frequency mismatch $\\Delta\\omega$ before calculation of the percentiles. All panels represent the evolution of the movement frequency as a function of metronome rate for a same participant on the 3 trials of the long synchronization task. The grey area represents the 95% confidence interval of the maximum movement frequency; the red dashed line represents a maximum frequency of 6.1 Hz. \\textbf{(1 and 3)} The 95% CI of the maximum movement frequency includes 6.1 Hz, hence we consider that the participant was able to synchronize until the last metronome rate since he could tap at this frequency: all plateaus are included in the analysis for the percentiles. \\textbf{(2)} The 95% CI of the maximum movement frequency is smaller than 6.1 Hz: the participant did not manage to move fast enough to reach the fastest rate, hence synchronization is limited by the movement frequency. Only plateaus occuring before the maximum movement frequency and where the movement frequency is not included in the 95% CI of the maximum frequency (black dots) are included in the analysis for the percentiles."}
+df_raw_data %>%
+  filter(tap > 3 & task == 'sync') %>%
+  group_by(group, subject, task, task_number, frequency) %>%
+  summarise(
+    freq = mean(1/period, na.rm = TRUE), 
+    sd_freq = sd(1/period, na.rm = TRUE),
+    n = sum(!is.na(period)),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    se = sd_freq / sqrt(n),
+    t_val = qt(0.975, df = n - 1),
+    ci_lower = freq - t_val * se,
+    ci_upper = freq + t_val * se,
+    frequency_shift = freq - frequency
+  ) %>%
+  group_by(group, subject, task, task_number) %>%
+  mutate(
+    max_freq = max(freq),
+    rate_at_max_freq = frequency[which.max(freq)],
+    ci_upper_at_max_freq = ci_upper[which.max(freq)],
+    ci_lower_at_max_freq = ci_lower[which.max(freq)],
+    plateau_classification = ifelse(
+      frequency == rate_at_max_freq, "Maximum",
+      ifelse(
+        ci_upper_at_max_freq >= 6.1, "Before maximum",
+        ifelse(
+          freq < ci_lower_at_max_freq &
+            frequency < rate_at_max_freq, 
+          "Before maximum", 
+          "In the CI"
+          )
+      )
+    )
+  ) %>%
+  ungroup() %>%
+  filter(subject == "IN06") %>%
+  ggplot(aes(x = frequency, y = freq)) +
+  geom_rect(
+    aes(
+      ymin = ci_lower_at_max_freq, 
+      ymax = ci_upper_at_max_freq
+    ),
+    xmin = -Inf, xmax = Inf,
+    fill = "grey80", alpha = 0.2,
+    inherit.aes = FALSE
+  ) +
+  geom_hline(
+    aes(yintercept = 6.1), 
+    linetype = "dashed", linewidth = 1.2, color = "red"
+  ) +
+  geom_abline(
+    aes(slope = 1, intercept = 0), 
+    linetype = "dashed", color = "grey50"
+  ) +
+  geom_line() +
+  geom_point(
+    aes(color = plateau_classification, 
+        shape = plateau_classification), 
+    size = 3
+  ) +
+  scale_x_continuous(breaks = seq(1.0, 6.1, by = 0.9)) +
+  scale_y_continuous(breaks = seq(1.0, 7.3, by = 0.9)) +
+   scale_shape_manual(
+     values = c("Before maximum" = 16, 
+                "In the CI" = 1, 
+                "Maximum" = 16)) +
+  scale_color_manual(
+    values = c("Before maximum" = "black", 
+               "In the CI" = "black", 
+               "Maximum" = "red")
+  ) +
+  labs(x = "Metronome rate", y = "Movement frequency") +
+  facet_grid(~task_number) +
+  theme(legend.position = "bottom")
+```
+
+```{r}
+df_max_freq_mis <- df_raw_data %>%
+  filter(tap > 3 & task == 'sync') %>%
+  group_by(group, subject, task, task_number, frequency) %>%
+  
+  # Calculate average movement frequency with 95% CI
+  summarise(
+    freq = mean(1/period, na.rm = TRUE), 
+    sd_freq = sd(1/period, na.rm = TRUE),
+    n = sum(!is.na(period)),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    se = sd_freq / sqrt(n),
+    t_val = qt(0.975, df = n - 1),
+    ci_lower = freq - t_val * se,
+    ci_upper = freq + t_val * se,
+    freq_mis = freq - frequency
+  ) %>%
+  
+  # Find maximum movement frequency and associated 95% CI
+  group_by(group, subject, task_number) %>%
+  mutate(
+    max_freq = max(freq),
+    rate_at_max_freq = frequency[which.max(freq)],
+    ci_upper_at_max_freq = ci_upper[which.max(freq)],
+    ci_lower_at_max_freq = ci_lower[which.max(freq)]
+  ) %>%
+  select(-c(n, se, t_val, ci_lower, ci_upper)) %>%
+  
+  # Apply criteria 2:
+  #   - max freq >= 6.1: keep all plateaus
+  #   - max freq < 6.1: only keep plateaus with freq < 95% CI
+  mutate(
+    keep_plateau = ifelse(
+      ci_upper_at_max_freq >= 6.1, "yes", ifelse(
+        freq < ci_lower_at_max_freq & 
+          frequency < rate_at_max_freq, "yes", "no"
+      )
+    )
+  ) %>%
+  ungroup() %>%
+  
+  # Calculate 25th and 75th percentile
+  # Only keep the one with highest absolute value
+  group_by(group, subject, task_number) %>%
+  filter(keep_plateau == "yes") %>%
+  summarise(
+    q20 = quantile(freq_mis, probs = 0.2),
+    q80 = quantile(freq_mis, probs = 0.8),
+    .groups = "drop"
+  ) %>%
+  mutate(max_freq_mis = ifelse(abs(q20) > abs(q80), q20, q80)) %>%
+  select(-c(q20, q80))
+```
+
+```{r}
+df_async_freq_mis <- merge(
+  df_async_by_task %>% 
+    filter(task == "sync") %>% 
+    select(-c(task)),
+  df_max_freq_mis
+) %>%
+  mutate(
+    frequency = as.factor(frequency)
+  )
+```
+
+#### Linear mixed model structures
+
+We want to analyze the effect of the maximum of frequency mismatch in the trial on mean asynchrony. As we have seen, mean asynchrony varies widely with frequency. Therefore, we fitted a model to study the relationship between frequency mismatch and mean asynchrony, after controling for the effect of frequency on mean asynchrony.
+
+Before fitting the model, we had to determine whether the linear mixed model should contain random intercepts only (value at 1.0 Hz varying for each participant; `RI`), or random intercept and slope (evolution of mean asynchrony with frequency varying for each participant as well). Since frequency was included as a categorical variable, the random slope was formalized by a random intercept at each frequency (`RIN`; `N` stands for nested).
+
+```{r}
+list_lmm_mean_async_freq_mis_comparison_fr <- list(
+  RI = lmer(
+    mean_async ~ frequency + max_freq_mis + (1 | subject),
+    data = subset(df_async_freq_mis, group == "French")
+  ),
+  RIN = lmer(
+    mean_async ~ frequency + max_freq_mis + (1 | subject:frequency),
+    data = subset(df_async_freq_mis, group == "French")
+  )
+)
+
+list_lmm_mean_async_freq_mis_comparison_in <- list(
+  RI = lmer(
+    mean_async ~ frequency + max_freq_mis + (1 | subject),
+    data = subset(df_async_freq_mis, group == "Indian")
+  ),
+  RIN = lmer(
+    mean_async ~ frequency + max_freq_mis + (1 | subject:frequency),
+    data = subset(df_async_freq_mis, group == "Indian")
+  )
+)
+```
+
+```{r lmm-meanasync-freqmis-models}
+kable(
+  rbind(
+    format_model_comparison(
+      compare_performance(
+        list_lmm_mean_async_freq_mis_comparison_fr$RI,
+        list_lmm_mean_async_freq_mis_comparison_fr$RIN,
+        verbose = FALSE
+      )
+    ) %>%
+      mutate(Model = c("RI", "RIN")),
+    format_model_comparison(
+      compare_performance(
+        list_lmm_mean_async_freq_mis_comparison_in$RI,
+        list_lmm_mean_async_freq_mis_comparison_in$RIN,
+        verbose = FALSE
+      )
+    ) %>%
+      mutate(Model = c("RI", "RIN"))
+  ),
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Model comparison for the relationship between mean asynchrony and max $\\Delta\\omega$",
+  caption = "Model comparison for the relationship between mean asynchrony (in ms) and max frequency mismatch $\\Delta\\omega$ (in Hz) for French and Indian groups. The table shows the AIC, AICc, and BIC values with their weights, as well as the marginal and conditional $R^2$ values, the intraclass correlation coefficient (ICC), the root mean square error (RMSE), and the residual standard deviation ($\\sigma_r$) for each model."
+) %>%
+  pack_rows(index = c("French" = 2, "Indian" = 2)) %>%
+  kable_styling(latex_options = c("hold_position", "scale_down"))
+```
+
+For both groups, the model with random intercepts outperformed the other model (Table \@ref(tab:lmm-meanasync-freqmis-models)). Therefore, a separate linear mixed model was fitted for each group, defined as $$\text{mean asynchrony} \sim \text{max } \Delta \omega + \text{frequency} + (1 \mid \text{subject}), \tag{13}$$where $\text{max }\Delta\omega$ is the maximum value of frequency mismatch in the trial and *frequency* is a categorical variable with levels 1.0 Hz to 3.7 Hz every 0.3 Hz.
+
+```{r}
+lmm_mean_async_freq_mis_fr <- lmer(
+  mean_async ~ max_freq_mis + frequency - 1 + (1 | subject),
+  data = df_async_freq_mis %>%
+    filter(group == "French") %>%
+    mutate(frequency = as.factor(frequency))
+)
+
+lmm_mean_async_freq_mis_in <- lmer(
+  mean_async ~ max_freq_mis + frequency - 1 + (1 | subject),
+  data = df_async_freq_mis %>%
+    filter(group == "Indian") %>%
+    mutate(frequency = as.factor(frequency))
+)
+```
+
+#### Assumptions checking
+
+```{r lmm-meanasync-freqmis-fr-assumptions, fig.asp=0.6, out.width="80%", fig.scap="Diagnostic plots for the relationship between mean asynchrony and max $\\Delta\\omega$ for the French group", fig.cap="Diagnostic plots assessing linear mixed model assumptions for the relationship between mean asynchrony (in ms) and max frequency mismatch $\\Delta\\omega$ (in Hz) for the French group. \\textbf{(A)} Residuals versus fitted values; \\textbf{(B)} normal Q-Q plot for residuals; \\textbf{(C)} histogram of residuals; \\textbf{(D)} individual random effect coefficients for intercept by group; \\textbf{(E)} normal Q-Q plot for random effects; \\textbf{(F)} histogram of random effects. All assumptions were satisfactorily met."}
+lm_assumptions_check(lmm_mean_async_freq_mis_fr)
+```
+
+```{r lmm-meanasync-freqmis-in-assumptions, fig.asp=0.6, out.width="80%", fig.scap="Diagnostic plots for the relationship between mean asynchrony and max $\\Delta\\omega$ for the Indian group", fig.cap="Diagnostic plots assessing linear mixed model assumptions for the relationship between mean asynchrony (in ms) and max frequency mismatch $\\Delta\\omega$ (in Hz) for the Indian group. \\textbf{(A)} Residuals versus fitted values; \\textbf{(B)} normal Q-Q plot for residuals; \\textbf{(C)} histogram of residuals; \\textbf{(D)} individual random effect coefficients for intercept by group; \\textbf{(E)} normal Q-Q plot for random effects; \\textbf{(F)} histogram of random effects. All assumptions were satisfactorily met."}
+lm_assumptions_check(lmm_mean_async_freq_mis_in)
+```
+
+The diagnostic plots (Figures \@ref(fig:lmm-meanasync-freqmis-fr-assumptions) and \@ref(fig:lmm-meanasync-freqmis-in-assumptions)) indicate that all model assumptions were satisfactorily met for both groups.
+
+#### Results
+
+The coefficients from the linear mixed models are presented in Table \@ref(tab:lmm-meanasync-freqmis-coefs). Information about the fit of the models is presented in Table \@ref(tab:lmm-meanasync-freqmis-models).
+
+```{r lmm-meanasync-freqmis-coefs}
+kable(
+  do.call(
+    rbind,
+    lapply(list(lmm_mean_async_freq_mis_fr, lmm_mean_async_freq_mis_in), function(model) {
+      format_fixed_coefficients(model)
+    })
+  ) %>%
+    rownames_to_column(var = " ") %>%
+    mutate(` ` = c(
+      "Max $\\Delta\\omega$", "1.0 Hz", "1.3 Hz", "1.6 Hz", "1.9 Hz", "2.2 Hz",
+      "2.5 Hz", "2.8 Hz", "3.1 Hz", "3.4 Hz", "3.7 Hz",
+      "Max $\\Delta\\omega$", "1.0 Hz", "1.3 Hz", "1.6 Hz", "1.9 Hz", "2.2 Hz",
+      "2.5 Hz", "2.8 Hz", "3.1 Hz", "3.4 Hz", "3.7 Hz"
+    )),
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Fixed effects estimates for the relationship between mean asynchrony and max $\\Delta\\omega$",
+  caption = "Fixed effects estimates for the relationship between mean asynchrony (in ms) and max 
+  frequency mismatch $\\Delta\\omega$ (in Hz) for French and Indian participants. Max $\\Delta\\omega$ represents the change in mean asynchrony for an increase in the max $\\Delta\\omega$ of 1 Hz. The coefficients associated to a frequency represent the mean asynchrony at each frequency when the maximum frequency mismatch is 0. Coefficients shown with standard error, degrees of freedom, $t$-value and $p$-value. The model fit row shows marginal and conditional $R^2$ values."
+) %>% 
+  pack_rows(index=c("French" = 11, "Indian" = 11)) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+```{r lmm-meanasync-freqmis-ranef}
+kable(
+  do.call(
+    rbind,
+    lapply(list(lmm_mean_async_freq_mis_fr, lmm_mean_async_freq_mis_in), function(model) {
+      create_df_ranef_intercept(model)
+    })
+  ),
+  booktabs = TRUE,
+  escape = FALSE,
+  caption.short = "Random effects and model fit for the relationship between mean asynchrony and max $\\Delta\\omega$",
+  caption = "Random effects and model fit for the relationship between mean asynchrony and max frequency mismatch $\\Delta\\omega$ for French and Indian participants. Displaying variance and standard deviation components, intraclass correlation for random effect and explanatory power metrics."
+) %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+\newpage
+
+```{r}
+# plt_legend <- cowplot::get_legend(
+#   ggplot(data = df_raw_data, aes(x = relphase, fill = group)) +
+#     geom_histogram() +
+#     scale_fill_manual(values = c(FR, IN)) +
+#     theme(legend.direction = "horizontal")
+# )
+#
+# figure1 <- plot_grid(
+#   plot_grid(
+#     plt_mean_smt + theme(legend.position = "none"),
+#     NULL,
+#     plt_sd_smt + theme(legend.position = "none"),
+#     nrow = 1, rel_widths = c(0.55, 0.1, 0.55)
+#   ),
+#   NULL,
+#   plot_grid(
+#     plt_msf + theme(legend.position = "none"),
+#     NULL,
+#     plt_sfc + theme(legend.position = "none"),
+#     nrow = 1, rel_widths = c(0.55, 0.1, 0.55)
+#   ),
+#   plt_legend,
+#   ncol = 1, rel_heights = c(0.45, 0.05, 0.45, 0.05)
+# )
+#
+# ggsave(
+#   filename = "RES/figures/figure1.png", figure1,
+#   width = 300, height = 300, units = "mm", bg = "white"
+# )
+```
+
+```{r}
+# figure2 <- plot_grid(
+#   plt_detuning + theme(legend.position = "none"),
+#   NULL,
+#   plt_evolution_sd_relphase_all + theme(legend.position = "none"),
+#   plt_legend,
+#   ncol = 1, rel_heights = c(0.45, 0.05, 0.45, 0.05)
+# )
+#
+# ggsave(
+#   filename = "RES/figures/figure2.png", figure2,
+#   width = 300, height = 300, units = "mm", bg = "white"
+# )
+```
+
+```{r}
+# ks_figure <- do.call(
+#   rbind,
+#   lapply(
+#     list(1, 2.2),
+#     function(x) {
+#       a <- df_sync_data[df_sync_data$group == "French" & df_sync_data$frequency == x, ]$relphase
+#       b <- df_sync_data[df_sync_data$group == "Indian" & df_sync_data$frequency == x, ]$relphase
+# 
+#       a <- a / (2 * pi) / x * 1000
+#       b <- b / (2 * pi) / x * 1000
+# 
+#       test_res <- ks.test(a, b, simulate.p.value = TRUE)
+# 
+#       data.frame(
+#         frequency = sprintf("%0.1f Hz", x),
+#         statistic = test_res$statistic,
+#         p = test_res$p.value,
+#         label1 = sprintf(
+#           "italic(D) == %.3f",
+#           test_res$statistic
+#         ),
+#         label2 = sprintf(
+#           "italic(p) %s",
+#           ifelse(
+#             test_res$p.value > 0.001,
+#             paste0("== ", round(test_res$p.value, 3)),
+#             "< 0.001"
+#           )
+#         )
+#       )
+#     }
+#   )
+# )
+# 
+# plt_ex_async <- df_sync_data %>%
+#   mutate(
+#     async = relphase / (2 * pi) / frequency * 1000,
+#     frequency = sprintf("%0.1f Hz", frequency)
+#   ) %>%
+#   filter(frequency %in% c("1.0 Hz", "2.2 Hz") & abs(async) < 300) %>%
+#   ggplot(aes(x = async, y = group, fill = group, color = group)) +
+#   # geom_histogram(
+#   #   position = "identity",
+#   #   binwidth = 20, center = 10,
+#   #   alpha = 0.3
+#   # ) +
+#   geom_density_ridges(
+#     scale = 1.5,
+#     alpha = 0.3
+#   ) +
+#   geom_vline(
+#     xintercept = 0,
+#     linetype = "dashed", linewidth = 1.2,
+#     color = "grey20", alpha = .8
+#   ) +
+#   geom_text(
+#     data = ks_figure,
+#     aes(x = 250, y = 3.2, label = label1),
+#     family = "serif",
+#     size = 6,
+#     parse = TRUE,
+#     inherit.aes = FALSE
+#   ) +
+#   geom_text(
+#     data = ks_figure,
+#     aes(x = 250, y = 2.6, label = label2),
+#     family = "serif",
+#     size = 6,
+#     parse = TRUE,
+#     inherit.aes = FALSE
+#   ) +
+#   facet_wrap(~frequency, ncol = 1) +
+#   scale_x_continuous(
+#     breaks = seq(-300, 300, by = 100),
+#     minor_breaks = seq(-300, 300, by = 50),
+#     guide = "axis_minor",
+#     expand = expand_scale(mult = c(0.01, 0.01))
+#   ) +
+#   scale_y_discrete(expand = expand_scale(mult = c(0.05, 1.6))) +
+#   scale_color_manual(values = c(FR, IN)) +
+#   scale_fill_manual(values = c(FR, IN)) +
+#   labs(x = "Asynchrony (ms)") +
+#   theme(
+#     axis.title.y = element_blank(),
+#     panel.spacing = unit(0.5, "cm"),
+#     ggh4x.axis.ticks.length.minor = rel(0.5),
+#   )
+
+# plt_ex_async
+```
+
+```{r}
+# figure3 <- plot_grid(
+#   plt_mean_async_comparison + theme(legend.position = "none"),
+#   NULL,
+#   plot_grid(
+#     plt_evolution_mean_async + theme(legend.position = "none"),
+#     NULL,
+#     plt_ex_async + theme(legend.position = "none"),
+#     nrow = 1, rel_widths = c(0.5, 0.1, 0.4)
+#   ),
+#   plt_legend,
+#   ncol = 1, rel_heights = c(0.5, 0.05, 0.4, 0.05)
+# )
+# # figure3
+# 
+# ggsave(
+#   filename = "RES/figures/figure3.png", figure3,
+#   width = 300, height = 250, units = "mm", bg = "white"
+# )
+```
+
+# References

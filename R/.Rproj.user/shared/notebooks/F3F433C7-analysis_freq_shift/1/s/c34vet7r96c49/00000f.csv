@@ -1,0 +1,6 @@
+"0","lmm_mean_async_detuning_fr <- lmer("
+"0","  mean_async ~ max_freq_shift + frequency - 1 + (1 | subject:frequency),"
+"0","  data = df_async_freq_shift %>%"
+"0","    filter(group == ""French"") %>%"
+"0","    mutate(frequency = as.factor(frequency))"
+"0",")"

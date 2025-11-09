@@ -1,0 +1,7 @@
+"0","df_freq_shift %>%"
+"0","  group_by(group, subject, task_number) %>%"
+"0","  summarise(n = n(), .groups = ""drop"") %>%"
+"0","  ggplot(aes(y = n)) +"
+"0","  geom_boxplot() + "
+"0","  geom_point(aes(x = 0), position = position_jitter(width = 0.2, height = 0)) +"
+"0","  scale_y_continuous(breaks = seq(8, 20, by = 2))"

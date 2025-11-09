@@ -1,0 +1,1513 @@
+{
+    "sources": [
+        {
+            "author": [
+                {
+                    "family": "Faraway",
+                    "given": "Julian James"
+                }
+            ],
+            "collection-title": "Chapman & hall/CRC texts in statistical science series",
+            "edition": "Second edition",
+            "id": "faraway2015",
+            "issued": {
+                "date-parts": [
+                    [
+                        2015
+                    ]
+                ]
+            },
+            "publisher": "CRC Press, Taylor & Francis Group",
+            "publisher-place": "Boca Raton",
+            "title": "Linear models with r",
+            "type": "book"
+        },
+        {
+            "author": [
+                {
+                    "family": "Pikovsky",
+                    "given": "Arkady"
+                },
+                {
+                    "family": "Rosenblum",
+                    "given": "Michael"
+                },
+                {
+                    "family": "Kurths",
+                    "given": "Jürgen"
+                }
+            ],
+            "edition": "1st edition",
+            "id": "pikovsky2001",
+            "issued": {
+                "date-parts": [
+                    [
+                        2001
+                    ]
+                ]
+            },
+            "language": "en-US",
+            "publisher": "Cambridge University Press",
+            "publisher-place": "Cambridge",
+            "title": "Synchronization: A universal concept in nonlinear sciences",
+            "title-short": "Synchronization",
+            "type": "book"
+        },
+        {
+            "DOI": "10.1126/science.3281253",
+            "URL": "https://www.science.org/doi/abs/10.1126/science.3281253",
+            "author": [
+                {
+                    "family": "Schöner",
+                    "given": "Gregor"
+                },
+                {
+                    "family": "Kelso",
+                    "given": "J. A. Scott"
+                }
+            ],
+            "container-title": "Science",
+            "id": "schöner1988",
+            "issue": "4847",
+            "issued": {
+                "date-parts": [
+                    [
+                        1988
+                    ]
+                ]
+            },
+            "note": "Publisher: American Association for the Advancement of Science",
+            "page": "1513-1520",
+            "title": "Dynamic pattern generation in behavioral and neural systems",
+            "type": "article-journal",
+            "volume": "239"
+        },
+        {
+            "DOI": "10.1201/9780429492563",
+            "author": [
+                {
+                    "family": "Strogatz",
+                    "given": "Steven H."
+                }
+            ],
+            "edition": "3",
+            "id": "strogatz2024",
+            "issued": {
+                "date-parts": [
+                    [
+                        2024
+                    ]
+                ]
+            },
+            "note": "DOI: 10.1201/9780429492563",
+            "publisher": "CRC Press",
+            "publisher-place": "Boca Raton",
+            "title": "Nonlinear dynamics and chaos: With applications to physics, biology, chemistry, and engineering",
+            "title-short": "Nonlinear dynamics and chaos",
+            "type": "book"
+        },
+        {
+            "DOI": "10.1038/nature08227",
+            "URL": "https://www.nature.com/articles/nature08227",
+            "author": [
+                {
+                    "family": "Scheffer",
+                    "given": "Marten"
+                },
+                {
+                    "family": "Bascompte",
+                    "given": "Jordi"
+                },
+                {
+                    "family": "Brock",
+                    "given": "William A."
+                },
+                {
+                    "family": "Brovkin",
+                    "given": "Victor"
+                },
+                {
+                    "family": "Carpenter",
+                    "given": "Stephen R."
+                },
+                {
+                    "family": "Dakos",
+                    "given": "Vasilis"
+                },
+                {
+                    "family": "Held",
+                    "given": "Hermann"
+                },
+                {
+                    "dropping-particle": "van",
+                    "family": "Nes",
+                    "given": "Egbert H."
+                },
+                {
+                    "family": "Rietkerk",
+                    "given": "Max"
+                },
+                {
+                    "family": "Sugihara",
+                    "given": "George"
+                }
+            ],
+            "container-title": "Nature",
+            "id": "scheffer2009",
+            "issue": "7260",
+            "issued": {
+                "date-parts": [
+                    [
+                        2009
+                    ]
+                ]
+            },
+            "language": "en",
+            "note": "Number: 7260 Publisher: Nature Publishing Group",
+            "page": "53-59",
+            "title": "Early-warning signals for critical transitions",
+            "type": "article-journal",
+            "volume": "461"
+        },
+        {
+            "author": [
+                {
+                    "family": "Mardia",
+                    "given": "Kantilal Vardichand"
+                }
+            ],
+            "id": "mardia1972",
+            "issued": {
+                "date-parts": [
+                    [
+                        1972
+                    ]
+                ]
+            },
+            "publisher": "Academic Press, London",
+            "title": "Statistics of directional data",
+            "type": "book"
+        },
+        {
+            "author": [
+                {
+                    "family": "Kelso",
+                    "given": "J. A. Scott"
+                },
+                {
+                    "family": "DelColle",
+                    "given": "J. D."
+                },
+                {
+                    "family": "Schöner",
+                    "given": "Gregor"
+                }
+            ],
+            "id": "kelso1990",
+            "issued": {
+                "date-parts": [
+                    [
+                        1990
+                    ]
+                ]
+            },
+            "page": "139-169",
+            "title": "Action-perception as a pattern-formation process",
+            "type": "chapter",
+            "volume": "8"
+        },
+        {
+            "DOI": "10.1214/09-SS051",
+            "URL": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2857732/",
+            "author": [
+                {
+                    "family": "Fay",
+                    "given": "Michael P."
+                },
+                {
+                    "family": "Proschan",
+                    "given": "Michael A."
+                }
+            ],
+            "container-title": "Statistics surveys",
+            "id": "fay2010",
+            "issued": {
+                "date-parts": [
+                    [
+                        2010
+                    ]
+                ]
+            },
+            "note": "PMID: 20414472 PMCID: PMC2857732",
+            "page": "1-39",
+            "title": "Wilcoxon-mann-whitney or t-test? On assumptions for hypothesis tests and multiple interpretations of decision rules",
+            "type": "article-journal",
+            "volume": "4"
+        },
+        {
+            "DOI": "10.1111/j.2517-6161.1995.tb02031.x",
+            "URL": "https://doi.org/10.1111/j.2517-6161.1995.tb02031.x",
+            "author": [
+                {
+                    "family": "Benjamini",
+                    "given": "Yoav"
+                },
+                {
+                    "family": "Hochberg",
+                    "given": "Yosef"
+                }
+            ],
+            "container-title": "Journal of the Royal Statistical Society: Series B (Methodological)",
+            "id": "benjamini1995",
+            "issue": "1",
+            "issued": {
+                "date-parts": [
+                    [
+                        1995,
+                        1,
+                        1
+                    ]
+                ]
+            },
+            "page": "289-300",
+            "title": "Controlling the false discovery rate: A practical and powerful approach to multiple testing",
+            "title-short": "Controlling the false discovery rate",
+            "type": "article-journal",
+            "volume": "57"
+        },
+        {
+            "author": [
+                {
+                    "family": "Jammalamadaka",
+                    "given": "S. Rao"
+                },
+                {
+                    "family": "Sengupta",
+                    "given": "Ambar N."
+                }
+            ],
+            "collection-title": "Series on Multivariate Analysis",
+            "id": "jammalamadaka2001",
+            "issued": {
+                "date-parts": [
+                    [
+                        2001
+                    ]
+                ]
+            },
+            "language": "en",
+            "publisher": "World Scientific",
+            "title": "Topics in Circular Statistics",
+            "type": "book"
+        },
+        {
+            "DOI": "10.1371/journal.pone.0005749",
+            "URL": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0005749",
+            "author": [
+                {
+                    "family": "Kelso",
+                    "given": "J. A. Scott"
+                },
+                {
+                    "family": "DeGuzman",
+                    "given": "Gonzalo C."
+                },
+                {
+                    "family": "Reveley",
+                    "given": "Colin"
+                },
+                {
+                    "family": "Tognoli",
+                    "given": "Emmanuelle"
+                }
+            ],
+            "container-title": "PLoS One",
+            "id": "kelso2009",
+            "issue": "6",
+            "issued": {
+                "date-parts": [
+                    [
+                        2009
+                    ]
+                ]
+            },
+            "language": "en",
+            "note": "Publisher: Public Library of Science",
+            "page": "e5749",
+            "title": "Virtual Partner Interaction (VPI): Exploring Novel Behaviors via Coordination Dynamics",
+            "title-short": "Virtual Partner Interaction (VPI)",
+            "type": "article-journal",
+            "volume": "4"
+        },
+        {
+            "DOI": "10.1371/journal.pone.0032308",
+            "URL": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0032308",
+            "author": [
+                {
+                    "family": "Zelic",
+                    "given": "Gregory"
+                },
+                {
+                    "family": "Mottet",
+                    "given": "Denis"
+                },
+                {
+                    "family": "Lagarde",
+                    "given": "Julien"
+                }
+            ],
+            "container-title": "PLoS One",
+            "id": "zelic2012",
+            "issue": "2",
+            "issued": {
+                "date-parts": [
+                    [
+                        2012
+                    ]
+                ]
+            },
+            "language": "en",
+            "note": "Publisher: Public Library of Science",
+            "page": "e32308",
+            "title": "Behavioral Impact of Unisensory and Multisensory Audio-Tactile Events: Pros and Cons for Interlimb Coordination in Juggling",
+            "title-short": "Behavioral Impact of Unisensory and Multisensory Audio-Tactile Events",
+            "type": "article-journal",
+            "volume": "7"
+        },
+        {
+            "author": [
+                {
+                    "family": "Gelman",
+                    "given": "Andrew"
+                },
+                {
+                    "family": "Hill",
+                    "given": "Jennifer"
+                }
+            ],
+            "collection-title": "Analytical Methods for Social Research",
+            "id": "gelman2007",
+            "issued": {
+                "date-parts": [
+                    [
+                        2007
+                    ]
+                ]
+            },
+            "language": "eng",
+            "publisher": "Cambridge University Press",
+            "publisher-place": "Cambridge",
+            "title": "Data Analysis Using Regression and Multilevel/Hierarchical Models",
+            "type": "book"
+        },
+        {
+            "DOI": "10.1007/BF00164052",
+            "author": [
+                {
+                    "family": "Ermentrout",
+                    "given": "Bard"
+                }
+            ],
+            "container-title": "Journal of Mathematical Biology",
+            "id": "ermentrout1991",
+            "issued": {
+                "date-parts": [
+                    [
+                        1991
+                    ]
+                ]
+            },
+            "page": "571-585",
+            "title": "An adaptive model for synchrony in the firefly pteroptyx malaccae",
+            "type": "article-journal",
+            "volume": "29"
+        },
+        {
+            "DOI": "10.1007/BF00336922",
+            "URL": "https://doi.org/10.1007/BF00336922",
+            "author": [
+                {
+                    "family": "Haken",
+                    "given": "Herman"
+                },
+                {
+                    "family": "Kelso",
+                    "given": "J. A. Scott"
+                },
+                {
+                    "family": "Bunz",
+                    "given": "Herbert"
+                }
+            ],
+            "container-title": "Biological Cybernetics",
+            "id": "haken1985",
+            "issue": "5",
+            "issued": {
+                "date-parts": [
+                    [
+                        1985
+                    ]
+                ]
+            },
+            "language": "en",
+            "note": "Number: 5",
+            "page": "347-356",
+            "title": "A theoretical model of phase transitions in human hand movements",
+            "type": "article-journal",
+            "volume": "51"
+        },
+        {
+            "DOI": "10.3389/fpsyg.2023.1161052",
+            "URL": "https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2023.1161052/full",
+            "author": [
+                {
+                    "family": "Desbernats",
+                    "given": "Anaïs"
+                },
+                {
+                    "family": "Martin",
+                    "given": "Elodie"
+                },
+                {
+                    "family": "Tallet",
+                    "given": "Jessica"
+                }
+            ],
+            "container-title": "Frontiers in Psychology",
+            "id": "desbernats2023",
+            "issued": {
+                "date-parts": [
+                    [
+                        2023,
+                        10,
+                        18
+                    ]
+                ]
+            },
+            "language": "en-US",
+            "note": "Publisher: Frontiers",
+            "title": "Which factors modulate spontaneous motor tempo? A systematic review of the literature",
+            "type": "article-journal",
+            "volume": "14"
+        },
+        {
+            "DOI": "10.1177/0049124104268644",
+            "URL": "https://doi.org/10.1177/0049124104268644",
+            "author": [
+                {
+                    "family": "Burnham",
+                    "given": "Kenneth P."
+                },
+                {
+                    "family": "Anderson",
+                    "given": "David R."
+                }
+            ],
+            "container-title": "Sociological Methods & Research",
+            "id": "burnham2004",
+            "issue": "2",
+            "issued": {
+                "date-parts": [
+                    [
+                        2004,
+                        11,
+                        1
+                    ]
+                ]
+            },
+            "language": "en",
+            "note": "Publisher: SAGE Publications Inc",
+            "page": "261-304",
+            "title": "Multimodel Inference: Understanding AIC and BIC in Model Selection",
+            "title-short": "Multimodel Inference",
+            "type": "article-journal",
+            "volume": "33"
+        },
+        {
+            "DOI": "10.1080/00949655.2012.690763",
+            "URL": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3836449/",
+            "author": [
+                {
+                    "family": "Zhang",
+                    "given": "Guangxiang"
+                },
+                {
+                    "family": "Chen",
+                    "given": "John J."
+                }
+            ],
+            "container-title": "Journal of statistical computation and simulation",
+            "id": "zhang2013",
+            "issue": "12",
+            "issued": {
+                "date-parts": [
+                    [
+                        2013
+                    ]
+                ]
+            },
+            "note": "PMID: 24273355 PMCID: PMC3836449",
+            "page": "10.1080/00949655.2012.690763",
+            "title": "Adaptive fitting of linear mixed-effects models with correlated random-effects",
+            "type": "article-journal",
+            "volume": "83"
+        },
+        {
+            "author": [
+                {
+                    "family": "Kelso",
+                    "given": "J. A. Scott"
+                }
+            ],
+            "id": "kelso1995",
+            "issued": {
+                "date-parts": [
+                    [
+                        1995
+                    ]
+                ]
+            },
+            "language": "en",
+            "publisher": "MIT Press",
+            "title": "Dynamic Patterns: The Self-organization of Brain and Behavior",
+            "title-short": "Dynamic Patterns",
+            "type": "book"
+        },
+        {
+            "URL": "https://www.frontiersin.org/articles/10.3389/fncom.2023.1151895",
+            "author": [
+                {
+                    "family": "Large",
+                    "given": "Edward W."
+                },
+                {
+                    "family": "Roman",
+                    "given": "Iran R."
+                },
+                {
+                    "family": "Kim",
+                    "given": "Ji Chul"
+                },
+                {
+                    "family": "Cannon",
+                    "given": "Jonathan"
+                },
+                {
+                    "family": "Pazdera",
+                    "given": "Jesse K."
+                },
+                {
+                    "family": "Trainor",
+                    "given": "Laurel J."
+                },
+                {
+                    "family": "Rinzel",
+                    "given": "John"
+                },
+                {
+                    "family": "Bose",
+                    "given": "Amitabha"
+                }
+            ],
+            "container-title": "Frontiers in Computational Neuroscience",
+            "id": "large2023",
+            "issued": {
+                "date-parts": [
+                    [
+                        2023
+                    ]
+                ]
+            },
+            "title": "Dynamic models for musical rhythm perception and coordination",
+            "type": "article-journal",
+            "volume": "17"
+        },
+        {
+            "DOI": "10.1007/BF00336995",
+            "URL": "https://doi.org/10.1007/BF00336995",
+            "author": [
+                {
+                    "family": "Schöner",
+                    "given": "Gregor"
+                },
+                {
+                    "family": "Haken",
+                    "given": "Herman"
+                },
+                {
+                    "family": "Kelso",
+                    "given": "J. A. Scott"
+                }
+            ],
+            "container-title": "Biological Cybernetics",
+            "id": "schöner1986",
+            "issue": "4",
+            "issued": {
+                "date-parts": [
+                    [
+                        1986
+                    ]
+                ]
+            },
+            "language": "en",
+            "page": "247-257",
+            "title": "A stochastic theory of phase transitions in human hand movement",
+            "type": "article-journal",
+            "volume": "53"
+        },
+        {
+            "author": [
+                {
+                    "family": "Arnold",
+                    "given": "Vladimir"
+                }
+            ],
+            "container-title": "Izvestiya Akademii Nauk SSSR Seriya Matematicheskaya",
+            "id": "arnold1961",
+            "issue": "1",
+            "issued": {
+                "date-parts": [
+                    [
+                        1961
+                    ]
+                ]
+            },
+            "language": "ru",
+            "page": "21-86",
+            "title": "Small denominator I: on the mapping of a circle into itself",
+            "title-short": "Small denominator I",
+            "type": "article-journal",
+            "volume": "25"
+        },
+        {
+            "DOI": "10.1152/jn.00175.2015",
+            "URL": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4507973/",
+            "author": [
+                {
+                    "family": "Cos",
+                    "given": "Ignasi"
+                },
+                {
+                    "family": "Girard",
+                    "given": "Benoît"
+                },
+                {
+                    "family": "Guigon",
+                    "given": "Emmanuel"
+                }
+            ],
+            "container-title": "Journal of Neurophysiology",
+            "id": "cos2015",
+            "issue": "1",
+            "issued": {
+                "date-parts": [
+                    [
+                        2015
+                    ]
+                ]
+            },
+            "note": "PMID: 25878154 PMCID: PMC4507973",
+            "page": "146-158",
+            "title": "Balancing out dwelling and moving: Optimal sensorimotor synchronization",
+            "title-short": "Balancing out dwelling and moving",
+            "type": "article-journal",
+            "volume": "114"
+        },
+        {
+            "DOI": "10.1016/j.neuroimage.2010.03.081",
+            "URL": "https://www.sciencedirect.com/science/article/pii/S1053811910003885",
+            "author": [
+                {
+                    "family": "Krause",
+                    "given": "Vanessa"
+                },
+                {
+                    "family": "Schnitzler",
+                    "given": "Alfons"
+                },
+                {
+                    "family": "Pollok",
+                    "given": "Bettina"
+                }
+            ],
+            "container-title": "NeuroImage",
+            "id": "krause2010",
+            "issue": "1",
+            "issued": {
+                "date-parts": [
+                    [
+                        2010
+                    ]
+                ]
+            },
+            "page": "245-251",
+            "title": "Functional network interactions during sensorimotor synchronization in musicians and non-musicians",
+            "type": "article-journal",
+            "volume": "52"
+        },
+        {
+            "DOI": "10.1111/ejn.15529",
+            "URL": "https://onlinelibrary.wiley.com/doi/abs/10.1111/ejn.15529",
+            "author": [
+                {
+                    "family": "Ono",
+                    "given": "Kentaro"
+                },
+                {
+                    "family": "Hashimoto",
+                    "given": "Junya"
+                },
+                {
+                    "family": "Sasaoka",
+                    "given": "Takafumi"
+                }
+            ],
+            "container-title": "European Journal of Neuroscience",
+            "id": "ono2022",
+            "issue": "11-12",
+            "issued": {
+                "date-parts": [
+                    [
+                        2022
+                    ]
+                ]
+            },
+            "language": "en",
+            "note": "_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1111/ejn.15529",
+            "page": "3391-3401",
+            "title": "Intertap interval dependence of the subdivision effect in auditory-synchronised tapping",
+            "type": "article-journal",
+            "volume": "55"
+        },
+        {
+            "DOI": "10.1525/mp.2007.24.4.367",
+            "URL": "https://online.ucpress.edu/mp/article/24/4/367/95272/Tapping-to-a-Very-Slow-Beat-A-Comparison-of",
+            "author": [
+                {
+                    "family": "Repp",
+                    "given": "Bruno H."
+                },
+                {
+                    "family": "Doggett",
+                    "given": "Rebecca"
+                }
+            ],
+            "container-title": "Music Perception",
+            "id": "repp2007",
+            "issue": "4",
+            "issued": {
+                "date-parts": [
+                    [
+                        2007
+                    ]
+                ]
+            },
+            "language": "en",
+            "note": "Publisher: University of California Press",
+            "page": "367-376",
+            "title": "Tapping to a Very Slow Beat: A Comparison of Musicians and Nonmusicians",
+            "title-short": "Tapping to a Very Slow Beat",
+            "type": "article-journal",
+            "volume": "24"
+        },
+        {
+            "DOI": "10.3389/fpsyg.2018.00458",
+            "URL": "https://www.frontiersin.org/articles/10.3389/fpsyg.2018.00458",
+            "author": [
+                {
+                    "family": "Scheurich",
+                    "given": "Rebecca"
+                },
+                {
+                    "family": "Zamm",
+                    "given": "Anna"
+                },
+                {
+                    "family": "Palmer",
+                    "given": "Caroline"
+                }
+            ],
+            "container-title": "Frontiers in Psychology",
+            "id": "scheurich2018",
+            "issued": {
+                "date-parts": [
+                    [
+                        2018
+                    ]
+                ]
+            },
+            "page": "458",
+            "title": "Tapping into rate flexibility: Musical training facilitates synchronization around spontaneous production rates",
+            "title-short": "Tapping into rate flexibility",
+            "type": "article-journal",
+            "volume": "9"
+        },
+        {
+            "DOI": "10.1007/s10654-016-0149-3",
+            "URL": "https://doi.org/10.1007/s10654-016-0149-3",
+            "author": [
+                {
+                    "family": "Greenland",
+                    "given": "Sander"
+                },
+                {
+                    "family": "Senn",
+                    "given": "Stephen J."
+                },
+                {
+                    "family": "Rothman",
+                    "given": "Kenneth J."
+                },
+                {
+                    "family": "Carlin",
+                    "given": "John B."
+                },
+                {
+                    "family": "Poole",
+                    "given": "Charles"
+                },
+                {
+                    "family": "Goodman",
+                    "given": "Steven N."
+                },
+                {
+                    "family": "Altman",
+                    "given": "Douglas G."
+                }
+            ],
+            "container-title": "European Journal of Epidemiology",
+            "id": "greenland2016",
+            "issue": "4",
+            "issued": {
+                "date-parts": [
+                    [
+                        2016,
+                        4,
+                        1
+                    ]
+                ]
+            },
+            "language": "en",
+            "page": "337-350",
+            "title": "Statistical tests, P values, confidence intervals, and power: a guide to misinterpretations",
+            "title-short": "Statistical tests, P values, confidence intervals, and power",
+            "type": "article-journal",
+            "volume": "31"
+        },
+        {
+            "DOI": "10.1007/BF00202613",
+            "URL": "https://doi.org/10.1007/BF00202613",
+            "author": [
+                {
+                    "family": "deGuzman",
+                    "given": "G. C."
+                },
+                {
+                    "family": "Kelso",
+                    "given": "J. A. S."
+                }
+            ],
+            "container-title": "Biological Cybernetics",
+            "id": "deguzman1991",
+            "issue": "6",
+            "issued": {
+                "date-parts": [
+                    [
+                        1991,
+                        4,
+                        1
+                    ]
+                ]
+            },
+            "language": "en",
+            "page": "485-495",
+            "title": "Multifrequency behavioral patterns and the phase attractive circle map",
+            "type": "article-journal",
+            "volume": "64"
+        },
+        {
+            "DOI": "10.1109/101.9569",
+            "URL": "https://ieeexplore.ieee.org/abstract/document/9569",
+            "author": [
+                {
+                    "family": "Haken",
+                    "given": "H. P. J."
+                }
+            ],
+            "container-title": "IEEE Circuits and Devices Magazine",
+            "id": "haken1988",
+            "issue": "6",
+            "issued": {
+                "date-parts": [
+                    [
+                        1988,
+                        11
+                    ]
+                ]
+            },
+            "page": "3-7",
+            "title": "Synergetics",
+            "type": "article-journal",
+            "volume": "4"
+        },
+        {
+            "author": [
+                {
+                    "family": "Haken",
+                    "given": "Hermann"
+                }
+            ],
+            "collection-title": "Springer Series in Synergetics Ser",
+            "id": "haken1988a",
+            "issued": {
+                "date-parts": [
+                    [
+                        1988
+                    ]
+                ]
+            },
+            "language": "eng",
+            "publisher": "Springer Berlin / Heidelberg",
+            "publisher-place": "Berlin, Heidelberg",
+            "title": "Information and Self-Organization: A Macroscopic Approach to Complex Systems",
+            "title-short": "Information and Self-Organization",
+            "type": "book"
+        },
+        {
+            "DOI": "10.1016/j.physd.2006.02.009",
+            "URL": "https://www.sciencedirect.com/science/article/pii/S0167278906000819",
+            "author": [
+                {
+                    "family": "Righetti",
+                    "given": "Ludovic"
+                },
+                {
+                    "family": "Buchli",
+                    "given": "Jonas"
+                },
+                {
+                    "family": "Ijspeert",
+                    "given": "Auke Jan"
+                }
+            ],
+            "container-title": "Physica D: Nonlinear Phenomena",
+            "id": "righetti2006",
+            "issue": "2",
+            "issued": {
+                "date-parts": [
+                    [
+                        2006
+                    ]
+                ]
+            },
+            "page": "269-281",
+            "title": "Dynamic hebbian learning in adaptive frequency oscillators",
+            "type": "article-journal",
+            "volume": "216"
+        },
+        {
+            "DOI": "10.1080/10407413.2018.1438196",
+            "URL": "https://doi.org/10.1080/10407413.2018.1438196",
+            "author": [
+                {
+                    "family": "Nordham",
+                    "given": "Craig A."
+                },
+                {
+                    "family": "Tognoli",
+                    "given": "Emmanuelle"
+                },
+                {
+                    "family": "Fuchs",
+                    "given": "Armin"
+                },
+                {
+                    "family": "Kelso",
+                    "given": "J. A. Scott"
+                }
+            ],
+            "container-title": "Ecological Psychology",
+            "id": "nordham2018",
+            "issue": "3",
+            "issued": {
+                "date-parts": [
+                    [
+                        2018
+                    ]
+                ]
+            },
+            "note": "Number: 3 Publisher: Routledge _eprint: https://doi.org/10.1080/10407413.2018.1438196",
+            "page": "224-249",
+            "title": "How interpersonal coordination affects individual behavior (and vice versa): Experimental analysis and adaptive HKB model of social memory",
+            "title-short": "How interpersonal coordination affects individual behavior (and vice versa)",
+            "type": "article-journal",
+            "volume": "30"
+        },
+        {
+            "DOI": "10.1063/5.0021836",
+            "URL": "https://aip.scitation.org/doi/10.1063/5.0021836",
+            "author": [
+                {
+                    "family": "Savinov",
+                    "given": "Mariya"
+                },
+                {
+                    "family": "Swigon",
+                    "given": "David"
+                },
+                {
+                    "family": "Ermentrout",
+                    "given": "Bard"
+                }
+            ],
+            "container-title": "Chaos: An Interdisciplinary Journal of Nonlinear Science",
+            "id": "savinov2021",
+            "issue": "3",
+            "issued": {
+                "date-parts": [
+                    [
+                        2021
+                    ]
+                ]
+            },
+            "note": "Number: 3 Publisher: American Institute of Physics",
+            "page": "033143",
+            "title": "Synchronization and locking in oscillators with flexible periods",
+            "type": "article-journal",
+            "volume": "31"
+        },
+        {
+            "DOI": "10.1371/journal.pcbi.1011154",
+            "URL": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1011154",
+            "author": [
+                {
+                    "family": "Roman",
+                    "given": "Iran R."
+                },
+                {
+                    "family": "Roman",
+                    "given": "Adrian S."
+                },
+                {
+                    "family": "Kim",
+                    "given": "Ji Chul"
+                },
+                {
+                    "family": "Large",
+                    "given": "Edward W."
+                }
+            ],
+            "container-title": "PLOS Computational Biology",
+            "id": "roman2023",
+            "issue": "6",
+            "issued": {
+                "date-parts": [
+                    [
+                        2023
+                    ]
+                ]
+            },
+            "language": "en",
+            "note": "Publisher: Public Library of Science",
+            "page": "e1011154",
+            "title": "Hebbian learning with elasticity explains how the spontaneous motor tempo affects music performance synchronization",
+            "type": "article-journal",
+            "volume": "19"
+        },
+        {
+            "DOI": "10.1103/PhysRevE.60.857",
+            "author": [
+                {
+                    "family": "Schäfer",
+                    "given": "Carsten"
+                },
+                {
+                    "family": "Rosenblum",
+                    "given": "Michael G."
+                },
+                {
+                    "family": "Abel",
+                    "given": "Hans-Henning"
+                },
+                {
+                    "family": "Kurths",
+                    "given": "Jürgen"
+                }
+            ],
+            "container-title": "Physical Review E",
+            "id": "schäfer1999",
+            "issue": "1",
+            "issued": {
+                "date-parts": [
+                    [
+                        1999
+                    ]
+                ]
+            },
+            "page": "857-870",
+            "title": "Synchronization in the human cardiorespiratory system",
+            "type": "article-journal",
+            "volume": "60"
+        },
+        {
+            "DOI": "10.2307/3002019",
+            "URL": "https://www.jstor.org/stable/3002019",
+            "author": [
+                {
+                    "family": "Satterthwaite",
+                    "given": "F. E."
+                }
+            ],
+            "container-title": "Biometrics Bulletin",
+            "id": "satterthwaite1946",
+            "issue": "6",
+            "issued": {
+                "date-parts": [
+                    [
+                        1946
+                    ]
+                ]
+            },
+            "note": "Publisher: [International Biometric Society, Wiley]",
+            "page": "110-114",
+            "title": "An approximate distribution of estimates of variance components",
+            "type": "article-journal",
+            "volume": "2"
+        },
+        {
+            "DOI": "10.3758/s13428-016-0809-y",
+            "author": [
+                {
+                    "family": "Luke",
+                    "given": "Steven G."
+                }
+            ],
+            "container-title": "Behavior Research Methods",
+            "id": "luke2017",
+            "issue": "4",
+            "issued": {
+                "date-parts": [
+                    [
+                        2017,
+                        8
+                    ]
+                ]
+            },
+            "language": "eng",
+            "note": "PMID: 27620283",
+            "page": "1494-1502",
+            "title": "Evaluating significance in linear mixed-effects models in R",
+            "type": "article-journal",
+            "volume": "49"
+        },
+        {
+            "DOI": "10.18637/jss.v082.i13",
+            "URL": "https://doi.org/10.18637/jss.v082.i13",
+            "author": [
+                {
+                    "family": "Kuznetsova",
+                    "given": "Alexandra"
+                },
+                {
+                    "family": "Brockhoff",
+                    "given": "Per B."
+                },
+                {
+                    "family": "Christensen",
+                    "given": "Rune H. B."
+                }
+            ],
+            "container-title": "Journal of Statistical Software",
+            "id": "kuznetsova2017",
+            "issued": {
+                "date-parts": [
+                    [
+                        2017,
+                        12,
+                        6
+                    ]
+                ]
+            },
+            "language": "en",
+            "page": "1-26",
+            "title": "lmerTest Package: Tests in Linear Mixed Effects Models",
+            "title-short": "lmerTest Package",
+            "type": "article-journal",
+            "volume": "82"
+        },
+        {
+            "DOI": "10.18637/jss.v067.i01",
+            "URL": "https://doi.org/10.18637/jss.v067.i01",
+            "author": [
+                {
+                    "family": "Bates",
+                    "given": "Douglas"
+                },
+                {
+                    "family": "Mächler",
+                    "given": "Martin"
+                },
+                {
+                    "family": "Bolker",
+                    "given": "Ben"
+                },
+                {
+                    "family": "Walker",
+                    "given": "Steve"
+                }
+            ],
+            "container-title": "Journal of Statistical Software",
+            "id": "bates2015",
+            "issued": {
+                "date-parts": [
+                    [
+                        2015,
+                        10,
+                        7
+                    ]
+                ]
+            },
+            "language": "en",
+            "page": "1-48",
+            "title": "Fitting Linear Mixed-Effects Models Using lme4",
+            "type": "article-journal",
+            "volume": "67"
+        },
+        {
+            "DOI": "10.21105/joss.03139",
+            "URL": "https://joss.theoj.org/papers/10.21105/joss.03139",
+            "author": [
+                {
+                    "family": "Lüdecke",
+                    "given": "Daniel"
+                },
+                {
+                    "family": "Ben-Shachar",
+                    "given": "Mattan S."
+                },
+                {
+                    "family": "Patil",
+                    "given": "Indrajeet"
+                },
+                {
+                    "family": "Waggoner",
+                    "given": "Philip"
+                },
+                {
+                    "family": "Makowski",
+                    "given": "Dominique"
+                }
+            ],
+            "container-title": "Journal of Open Source Software",
+            "id": "lüdecke2021",
+            "issue": "60",
+            "issued": {
+                "date-parts": [
+                    [
+                        2021,
+                        4,
+                        21
+                    ]
+                ]
+            },
+            "language": "en",
+            "page": "3139",
+            "title": "performance: An R Package for Assessment, Comparison and Testing of Statistical Models",
+            "title-short": "performance",
+            "type": "article-journal",
+            "volume": "6"
+        },
+        {
+            "URL": "https://rvlenth.github.io/emmeans/",
+            "author": [
+                {
+                    "family": "Lenth",
+                    "given": "Russell V."
+                },
+                {
+                    "family": "Piaskowski",
+                    "given": "Julia"
+                }
+            ],
+            "id": "russell2025",
+            "issued": {
+                "date-parts": [
+                    [
+                        2025
+                    ]
+                ]
+            },
+            "note": "R package version 2.0.0",
+            "title": "Emmeans: Estimated marginal means, aka least-squares means",
+            "title-short": "Emmeans",
+            "type": "book"
+        },
+        {
+            "URL": "https://CRAN.R-project.org/package=circular",
+            "author": [
+                {
+                    "family": "Agostinelli",
+                    "given": "Claudio"
+                },
+                {
+                    "family": "Lund",
+                    "given": "Ulric"
+                }
+            ],
+            "id": "agostinelli2025",
+            "issued": {
+                "date-parts": [
+                    [
+                        2025
+                    ]
+                ]
+            },
+            "title": "R package circular: Circular statistics (version 0.5-2)",
+            "title-short": "R package circular",
+            "type": "book"
+        },
+        {
+            "DOI": "10.1152/ajpregu.1984.246.6.R1000",
+            "URL": "https://journals.physiology.org/doi/abs/10.1152/ajpregu.1984.246.6.r1000",
+            "author": [
+                {
+                    "family": "Kelso",
+                    "given": "J. A. Scott"
+                }
+            ],
+            "container-title": "American Journal of Physiology - Regulatory, Integrative and Comparative Physiology",
+            "id": "kelso1984",
+            "issue": "6",
+            "issued": {
+                "date-parts": [
+                    [
+                        1984
+                    ]
+                ]
+            },
+            "note": "Publisher: American Physiological Society",
+            "page": "R1000-R1004",
+            "title": "Phase transitions and critical behavior in human bimanual coordination",
+            "type": "article-journal",
+            "volume": "246"
+        },
+        {
+            "DOI": "10.1006/brcg.2001.1304",
+            "author": [
+                {
+                    "family": "Aschersleben",
+                    "given": "Gisa"
+                }
+            ],
+            "container-title": "Brain and cognition",
+            "id": "aschersleben2002",
+            "issued": {
+                "date-parts": [
+                    [
+                        2002
+                    ]
+                ]
+            },
+            "page": "66-79",
+            "title": "Temporal control of movements in sensorimotor synchronization",
+            "type": "article-journal",
+            "volume": "48"
+        },
+        {
+            "DOI": "10.3758/BF03206433",
+            "URL": "https://doi.org/10.3758/BF03206433",
+            "author": [
+                {
+                    "family": "Repp",
+                    "given": "Bruno H."
+                }
+            ],
+            "container-title": "Psychonomic Bulletin & Review",
+            "id": "repp2005",
+            "issue": "6",
+            "issued": {
+                "date-parts": [
+                    [
+                        2005
+                    ]
+                ]
+            },
+            "language": "en",
+            "note": "Number: 6",
+            "page": "969-992",
+            "title": "Sensorimotor synchronization: A review of the tapping literature",
+            "title-short": "Sensorimotor synchronization",
+            "type": "article-journal",
+            "volume": "12"
+        },
+        {
+            "DOI": "10.3758/s13423-012-0371-2",
+            "URL": "https://doi.org/10.3758/s13423-012-0371-2",
+            "author": [
+                {
+                    "family": "Repp",
+                    "given": "Bruno H."
+                },
+                {
+                    "family": "Su",
+                    "given": "Yi-Huang"
+                }
+            ],
+            "container-title": "Psychonomic Bulletin & Review",
+            "id": "repp2013",
+            "issue": "3",
+            "issued": {
+                "date-parts": [
+                    [
+                        2013
+                    ]
+                ]
+            },
+            "language": "en",
+            "note": "Number: 3",
+            "page": "403-452",
+            "title": "Sensorimotor synchronization: A review of recent research (20062012)",
+            "title-short": "Sensorimotor synchronization",
+            "type": "article-journal",
+            "volume": "20"
+        },
+        {
+            "URL": "https://pure.mpg.de/pubman/faces/ViewItemOverviewPage.jsp?itemId=item_726717",
+            "author": [
+                {
+                    "family": "Wohlschläger",
+                    "given": "Andreas"
+                },
+                {
+                    "family": "Koch",
+                    "given": "Robert"
+                }
+            ],
+            "editor": [
+                {
+                    "family": "Dessain",
+                    "given": "Peter"
+                },
+                {
+                    "family": "Windsor",
+                    "given": "Luke"
+                }
+            ],
+            "id": "wohlschläger2000",
+            "issued": {
+                "date-parts": [
+                    [
+                        2000
+                    ]
+                ]
+            },
+            "language": "eng",
+            "page": "115-127",
+            "publisher": "Swets",
+            "title": "Synchronization error: An error in time perception",
+            "title-short": "Synchronization error",
+            "type": "chapter"
+        }
+    ],
+    "project_biblios": []
+}
