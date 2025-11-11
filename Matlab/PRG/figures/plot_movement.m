@@ -1,8 +1,7 @@
 function plot_movement(fig_num, mov_shape, subj, task, task_number, plat, movement_index, epsi_immobile, epsi_dwell)
     % PLOT_MOVEMENT Plots the specified movement of a given task of a given subject.
     %
-    % Author: Martin Le Guennec - Univ. Montpellier - France
-    %         martin.leguennec@gmail.com
+    % Author: XXX
     %
     % INPUTS:
     %   subj - String, the subject identifier.
